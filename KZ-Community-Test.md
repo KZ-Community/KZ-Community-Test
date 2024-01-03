@@ -454,11 +454,6 @@ function Update:Window(text,logo,keybind)
 				if toggled == false then
 					toggled = true
 					Circle:TweenPosition(UDim2.new(0,27,0,2),"Out","Sine",0.2,true)
-					game.StarterGui:SetCore("SendNotification", {
-					Icon = "rbxassetid://7251993295";
-					Title = "Bot Notification",
-					Text = "You have enabled the Function."
-					})
 					TweenService:Create(
 						Circle,
 						TweenInfo.new(0.4,Enum.EasingStyle.Quad,Enum.EasingDirection.Out),
@@ -467,11 +462,6 @@ function Update:Window(text,logo,keybind)
 				else
 					toggled = false
 					Circle:TweenPosition(UDim2.new(0,2,0,2),"Out","Sine",0.2,true)
-					game.StarterGui:SetCore("SendNotification", {
-					Icon = "rbxassetid://7251993295";
-					Title = "Bot Notification",
-					Text = "You Have Disabled The Function."
-					})
 					TweenService:Create(
 						Circle,
 						TweenInfo.new(0.4,Enum.EasingStyle.Quad,Enum.EasingDirection.Out),
@@ -484,11 +474,6 @@ function Update:Window(text,logo,keybind)
 			if config == true then
 				toggled = true
 				Circle:TweenPosition(UDim2.new(0,27,0,2),"Out","Sine",0.4,true)
-                game.StarterGui:SetCore("SendNotification", {
-					Icon = "rbxassetid://7251993295";
-					Title = "Bot Notification",
-					Text = "You have enabled the Function."
-					})
 				TweenService:Create(
 					Circle,
 					TweenInfo.new(0.4,Enum.EasingStyle.Quad,Enum.EasingDirection.Out),
