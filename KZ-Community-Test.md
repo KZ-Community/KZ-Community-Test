@@ -112,7 +112,7 @@ function Update:Window(text,logo,keybind)
 	Logo.BackgroundTransparency = 1.000
 	Logo.Position = UDim2.new(0, 10, 0, 1)
 	Logo.Size = UDim2.new(0, 25, 0, 25)
-	Logo.Image = "rbxassetid://7251993295"
+	Logo.Image = "rbxassetid://15864581736"
 
 	local Name = Instance.new("TextLabel")
 	Name.Name = "Name"
@@ -134,7 +134,7 @@ function Update:Window(text,logo,keybind)
 	Hub.Position = UDim2.new(0, 110, 0, 0)
 	Hub.Size = UDim2.new(0, 81, 0, 27)
 	Hub.Font = Enum.Font.GothamSemibold
-	Hub.Text = "    | [RACE 4] Blox Fruit"
+	Hub.Text = "    | [SALE] Blox Fruits"
 	Hub.TextColor3 = _G.Color
 	Hub.TextSize = 17.000
 	Hub.TextXAlignment = Enum.TextXAlignment.Left
@@ -1031,7 +1031,7 @@ MODILEMAGE.BackgroundTransparency = 1.000
 MODILEMAGE.BorderSizePixel = 0
 MODILEMAGE.Position = UDim2.new(0.234619886, 0, 0.239034846, 0)
 MODILEMAGE.Size = UDim2.new(0, 30, 0, 30)
-MODILEMAGE.Image = "rbxassetid://7251993295"
+MODILEMAGE.Image = "rbxassetid://15864581736"
 WarpNero.Name = "WarpNero"
 WarpNero.Parent = game.CoreGui
 WarpNero.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
@@ -1060,6 +1060,8 @@ Setting:Label("Script PC/Mobile")
 Setting:Label("Wellcone To Script KZ HUB")
 
 Setting:Seperator("Credit")
+Setting:Label("By Developer Developer @MARK 🐻")
+Setting:Label("By Developer @miidraayeerng")
 
 Setting:Button("Copy Link Discord",function()
 setclipboard("https://discord.gg/7EE2eGsyN5")
@@ -1295,7 +1297,31 @@ spawn(function()
     end
 end)
 
-    
+local Client = game.Players.LocalPlayer
+local STOP = require(Client.PlayerScripts.CombatFramework.Particle)
+local STOPRL = require(game:GetService("ReplicatedStorage").CombatFramework.RigLib)
+spawn(function()
+    while task.wait() do
+        if _G.FastAttack then
+            pcall(function()
+                if not shared.orl then shared.orl = STOPRL.wrapAttackAnimationAsync end
+                if not shared.cpc then shared.cpc = STOP.play end
+                    STOPRL.wrapAttackAnimationAsync = function(a,b,c,d,func)
+                    local Hits = STOPRL.getBladeHits(b,c,d)
+                    if Hits then
+                        STOP.play = function() end
+                        a:Play(0.01,0.01,0.01)
+                        func(Hits)
+                        STOP.play = shared.cpc
+                        wait(a.length * 0.5)
+                        a:Stop()
+                    end
+                end
+            end)
+        end
+    end
+end)
+      
 Setting:Toggle("Auto Click",false,function(value)
 _G.AutoClick = value
 end)
@@ -1364,7 +1390,7 @@ end)
     
     spawn(function()
       while wait() do
-      if _G.WhiteScreen then
+      if _G.WhiteScreen or _G.FastAttack then
         for i, v in pairs(game.Workspace["_WorldOrigin"]:GetChildren()) do
             if v.Name == "CurvedRing" or v.Name == "SlashHit" or v.Name == "DamageCounter" or v.Name == "SwordSlash" or v.Name == "SlashTail" or v.Name == "Sounds" then
                 v:Destroy() 
@@ -13676,15 +13702,3 @@ if game:GetService("ReplicatedStorage").Effect.Container:FindFirstChild("Respawn
 end
 
 print("KZ Hub Load Complete")
-
-game.StarterGui:SetCore("SendNotification", {
-      Icon = "http://www.roblox.com/asset/?id=9999999";
-      Title = "Domadic Hub", 
-      Text = "Welcome To Script!!";
-})
-wait(3)
-game.StarterGui:SetCore("SendNotification", {
-      Icon = "http://www.roblox.com/asset/?id=9999999";
-      Title = "Domadic Hub", 
-      Text = "made by @miidraayeerng อยาก Yed Owner Zps วะ";
-})
