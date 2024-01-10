@@ -7374,7 +7374,7 @@ FrozenIsland = M:Label("")
         while wait() do
             if _G.AutoFarmBossHallow then
                 pcall(function()
-                    if game:GetService("Workspace").Enemies:FindFirstChild("Soul Reaper [Lv. 2100] [Raid Boss]) then
+                    if game:GetService("Workspace").Enemies:FindFirstChild("Soul Reaper [Lv. 2100] [Raid Boss]") then
                         for i,v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
                             if string.find(v.Name , "Soul Reaper") then
                                 repeat task.wait()
