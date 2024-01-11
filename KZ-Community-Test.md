@@ -10770,7 +10770,7 @@ spawn(function()
         end)
 end)
     
-        R:Toggle("Auto Next Island",_G.Auto_Dungeon,function(value)
+        R:Toggle("Auto Farm Dungeon",_G.Auto_Dungeon,function(value)
         _G.Auto_Dungeon = value
         StopTween(_G.Auto_Dungeon)
     end)
@@ -10832,30 +10832,11 @@ spawn(function()
         wait(1)
     end
 end)
-    
-    R:Toggle("Auto Awakener",_G.Auto_Awakener,function(value)
-        _G.Auto_Awakener = value
-    end)
-    
-    spawn(function()
-        pcall(function()
-            while wait(.1) do
-                if _G.Auto_Awakener then
-                    game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("Awakener","Check")
-                    game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("Awakener","Awaken")
-                end
-            end
-        end)
-    end)
-    
-    R:Toggle("Kill Aura",nil,function(value)
-    _G.Kill_Aura = value
-    end) 
 
 spawn(function()
         pcall(function() 
             while wait() do
-                if _G.Kill_Aura then
+                if _G.Auto_Dungeon then
                     if game:GetService("Players")["LocalPlayer"].PlayerGui.Main.Timer.Visible == true then
                         for i,v in pairs(game:GetService("Workspace").Enemies:GetDescendants()) do
                             if v:FindFirstChild("Humanoid") and v:FindFirstChild("HumanoidRootPart") and v.Humanoid.Health > 0 then
@@ -10874,6 +10855,20 @@ spawn(function()
         end)
     end)
 
+R:Toggle("Auto Awakener",_G.Auto_Awakener,function(value)
+        _G.Auto_Awakener = value
+    end)
+    
+    spawn(function()
+        pcall(function()
+            while wait(.1) do
+                if _G.Auto_Awakener then
+                    game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("Awakener","Check")
+                    game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("Awakener","Awaken")
+                end
+            end
+        end)
+    end)
     
     R:Line()
 
