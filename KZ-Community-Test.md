@@ -6757,58 +6757,72 @@ M:Toggle("Auto Tushita", _G.Autotushita,function(value)
         StopTween( _G.DomadicAutoDriveBoat)
     end)
     
-    spawn(function()
-        while wait() do
-            pcall(function()
-                if _G.DomadicAutoDriveBoat then
-                    if not game:GetService("Workspace").Enemies:FindFirstChild("Shark") or not game:GetService("Workspace").Enemies:FindFirstChild("Terrorshark") or not game:GetService("Workspace").Enemies:FindFirstChild("Piranha") or not game:GetService("Workspace").Enemies:FindFirstChild("Fish Crew Member") then
-                        if not game:GetService("Workspace").Boats:FindFirstChild("PirateBrigade") then
-                            buyb = TPP(CFrame.new(-16927.451171875, 9.0863618850708, 433.8642883300781))
-                            if (CFrame.new(-16927.451171875, 9.0863618850708, 433.8642883300781).Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).magnitude <= 10 then
-                                if buyb then buyb:Stop() end
-                                local args = {
-                                    [1] = "BuyBoat",
-                                    [2] = "PirateBrigade"
-                                }
-    
-                                game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
-                            end
-                        elseif game:GetService("Workspace").Boats:FindFirstChild("PirateBrigade") then
-                            if game.Players.LocalPlayer.Character:WaitForChild("Humanoid").Sit == false then
-                                TPP(game:GetService("Workspace").Boats.PirateBrigade.VehicleSeat.CFrame * CFrame.new(0,1,0))
-                            else
-                                for i,v in pairs(game:GetService("Workspace").Boats:GetChildren()) do
-                                    if v.Name == "PirateBrigade" then
-                                        repeat wait()
-                                            if (CFrame.new(-17013.80078125, 10.962434768676758, 438.0169982910156).Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).magnitude <= 10 then
-                                                TPB(CFrame.new(-33163.1875, 10.964323997497559, -324.4842224121094))
-                                            elseif (CFrame.new(-33163.1875, 10.964323997497559, -324.4842224121094).Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).magnitude <= 10 then
-                                                TPB(CFrame.new(-37952.49609375, 10.96342945098877, -1324.12109375))
-                                            elseif (CFrame.new(-37952.49609375, 10.96342945098877, -1324.12109375).Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).magnitude <= 10 then
-                                                TPB(CFrame.new(-33163.1875, 10.964323997497559, -324.4842224121094))
-                                            end 
-                                        until game:GetService("Workspace").Enemies:FindFirstChild("Shark") or game:GetService("Workspace").Enemies:FindFirstChild("Terrorshark") or game:GetService("Workspace").Enemies:FindFirstChild("Piranha") or game:GetService("Workspace").Enemies:FindFirstChild("Fish Crew Member") or _G.DomadicAutoDriveBoat == false
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Workspace = game:GetService("Workspace")
+
+local LocalPlayer = Players.LocalPlayer
+local Character = LocalPlayer.Character
+local HumanoidRootPart = Character:WaitForChild("HumanoidRootPart")
+local Humanoid = Character:WaitForChild("Humanoid")
+local Remotes = ReplicatedStorage.Remotes
+
+local function buyBoat()
+    local buyb = TPP(CFrame.new(-16927.451171875, 9.0863618850708, 433.8642883300781))
+    if (buyb.Position - HumanoidRootPart.Position).magnitude <= 10 then
+        if buyb then buyb:Stop() end
+        Remotes.CommF_:InvokeServer("BuyBoat", "PirateBrigade")
+    end
+end
+
+spawn(function()
+    while wait() do
+        pcall(function()
+            if _G.DomadicAutoDriveBoat then
+                local enemies = Workspace.Enemies
+                local boats = Workspace.Boats
+
+                if not enemies:FindFirstChild("Shark") or not enemies:FindFirstChild("Terrorshark") or not enemies:FindFirstChild("Piranha") or not enemies:FindFirstChild("Fish Crew Member") then
+                    if not boats:FindFirstChild("PirateBrigade") then
+                        buyBoat()
+                    elseif LocalPlayer.Character.Humanoid.Sit == false then
+                        TPP(boats.PirateBrigade.VehicleSeat.CFrame * CFrame.new(0,1,0))
+                    else
+                        for _, boat in pairs(boats:GetChildren()) do
+                            if boat.Name == "PirateBrigade" then
+                                repeat wait()
+                                    local positions = {
+                                        CFrame.new(-17013.80078125, 10.962434768676758, 438.0169982910156),
+                                        CFrame.new(-33163.1875, 10.964323997497559, -324.4842224121094),
+                                        CFrame.new(-37952.49609375, 10.96342945098877, -1324.12109375),
+                                    }
+
+                                    for _, position in pairs(positions) do
+                                        if (position.Position - HumanoidRootPart.Position).magnitude <= 10 then
+                                            TPB(position)
+                                        end
                                     end
-                                end
+                                until enemies:FindFirstChild("Shark") or enemies:FindFirstChild("Terrorshark") or enemies:FindFirstChild("Piranha") or enemies:FindFirstChild("Fish Crew Member") or _G.DomadicAutoDriveBoat == false
                             end
                         end
                     end
                 end
-            end)
+            end
+        end)
+    end
+end)
+
+spawn(function()
+    pcall(function()
+        while wait() do
+            if _G.DomadicAutoDriveBoat then
+                if Workspace.Enemies:FindFirstChild("Shark") or Workspace.Enemies:FindFirstChild("Terrorshark") or Workspace.Enemies:FindFirstChild("Piranha") or Workspace.Enemies:FindFirstChild("Fish Crew Member") then
+                    Humanoid.Sit = false
+                end
+            end
         end
     end)
-    
-    spawn(function()
-		pcall(function()
-			while wait() do
-				if _G.DomadicAutoDriveBoat then
-					if game:GetService("Workspace").Enemies:FindFirstChild("Shark") or game:GetService("Workspace").Enemies:FindFirstChild("Terrorshark") or game:GetService("Workspace").Enemies:FindFirstChild("Piranha") or game:GetService("Workspace").Enemies:FindFirstChild("Fish Crew Member") then
-					    game.Players.LocalPlayer.Character.Humanoid.Sit = false
-					end
-				end
-			end
-		end)
-	end)
+end)
 	
 
     M:Toggle("Auto Farm Terrorshark", _G.AutoTerrorshark,function(value)
@@ -6993,37 +7007,46 @@ M:Toggle("Auto Tushita", _G.Autotushita,function(value)
     end)
     
     function CheckPirateBoat()
-            local checkmmpb = {"PirateGrandBrigade", "PirateBrigade"}
-            for r, v in next, game:GetService("Workspace").Enemies:GetChildren() do
-                if table.find(checkmmpb, v.Name) and v:FindFirstChild("Health") and v.Health.Value > 0 then
-                    return v
-                end
-            end
+    local checkmmpb = {"PirateGrandBrigade", "PirateBrigade"}
+    local enemies = game:GetService("Workspace").Enemies:GetChildren()
+
+    for _, enemy in ipairs(enemies) do
+        if table.find(checkmmpb, enemy.Name) and enemy:FindFirstChild("Health") and enemy.Health.Value > 0 then
+            return enemy
         end
-        
-        spawn(function()
+    end
+end
+
+local function aimAtPosition(position)
+    local AimBotSkillPosition = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame * CFrame.new(0, -5, 0)
+    local Skillaimbot = true
+    local AutoSkill = false
+
+    repeat
+        wait()
+        spawn(topos(position.Engine.CFrame * CFrame.new(0, -20, 0)), 1)
+    until not position or not position.Parent or position.Health.Value <= 0 or not CheckPirateBoat()
+
+    Skillaimbot = true
+    AutoSkill = false
+end
+
+spawn(function()
     while wait() do
         if _G.KillGhostShip then
             pcall(function()
-                if CheckPirateBoat() then
-                    game:GetService("VirtualInputManager"):SendKeyEvent(true,32,false,game)
-                    wait(.5)
-                    game:GetService("VirtualInputManager"):SendKeyEvent(false,32,false,game)
-                    local v = CheckPirateBoat()
-                    repeat
-                        wait()
-                        spawn(topos(v.Engine.CFrame * CFrame.new(0, -20, 0)), 1)
-                        AimBotSkillPosition = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame * CFrame.new(0, -5, 0)
-                        Skillaimbot = true
-                        AutoSkill = false
-                    until not v or not v.Parent or v.Health.Value <= 0 or not CheckPirateBoat()
-                    Skillaimbot = true
-                    AutoSkill = false
+                local pirateBoat = CheckPirateBoat()
+                if pirateBoat then
+                    game:GetService("VirtualInputManager"):SendKeyEvent(true, 32, false, game)
+                    wait(0.5)
+                    game:GetService("VirtualInputManager"):SendKeyEvent(false, 32, false, game)
+                    aimAtPosition(pirateBoat)
                 end
             end)
         end
     end
 end)
+
     
     M:Toggle("Auto Ghost Ship",_G.bjirFishBoat,function(value)
     _G.bjirFishBoat = value
@@ -7031,117 +7054,59 @@ end)
     end)
     
 function CheckPirateBoat()
-            local checkmmpb = {"FishBoat"}
-            for r, v in next, game:GetService("Workspace").Enemies:GetChildren() do
-                if table.find(checkmmpb, v.Name) and v:FindFirstChild("Health") and v.Health.Value > 0 then
-                    return v
-                end
-            end
+    local checkmmpb = {"FishBoat"}
+    local enemies = game:GetService("Workspace").Enemies:GetChildren()
+
+    for _, enemy in ipairs(enemies) do
+        if table.find(checkmmpb, enemy.Name) and enemy:FindFirstChild("Health") and enemy.Health.Value > 0 then
+            return enemy
         end
+    end
+end
+
+local function performSkillAction(key)
+    game:GetService("VirtualInputManager"):SendKeyEvent(true, key, false, game.Players.LocalPlayer.Character.HumanoidRootPart)
+    wait(0.2)
+    game:GetService("VirtualInputManager"):SendKeyEvent(false, key, false, game.Players.LocalPlayer.Character.HumanoidRootPart)
+end
+
 spawn(function()
     while wait() do
-        pcall(function()
-            if _G.bjirFishBoat then
-                if CheckPirateBoat() then
-                    game:GetService("VirtualInputManager"):SendKeyEvent(true, 32, false, game)
+        if _G.bjirFishBoat then
+            pcall(function()
+                local pirateBoat = CheckPirateBoat()
+                if pirateBoat then
+                    performSkillAction(32)  -- Press 'Space' key
                     wait(0.5)
-                    game:GetService("VirtualInputManager"):SendKeyEvent(false, 32, false, game)
-                    local v = CheckPirateBoat()
+                    performSkillAction(32)  -- Release 'Space' key
                     repeat
                         wait()
-                        spawn(topos(v.Engine.CFrame * CFrame.new(0, -20, 0), 1))
+                        spawn(topos(pirateBoat.Engine.CFrame * CFrame.new(0, -20, 0), 1))
                         AutoSkill = true
                         Skillaimbot = true
                         AimBotSkillPosition = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame * CFrame.new(0, -5, 0)
-                    until v.Parent or v.Health.Value <= 0 or not CheckPirateBoat()
+                    until not pirateBoat or not pirateBoat.Parent or pirateBoat.Health.Value <= 0 or not CheckPirateBoat()
                     AutoSkill = false
                     Skillaimbot = false
                 end
-            end
-        end)
+            end)
+        end
     end
 end)
 
-    spawn(function()
-        while wait() do
-            if _G.bjirFishBoat then
-                   pcall(function()
-						if CheckPirateBoat() then
-						    AutoHaki()
-							game:GetService("VirtualUser"):CaptureController()
-							game:GetService("VirtualUser"):Button1Down(Vector2.new(1280,672))
-							for i,v in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
-								if v:IsA("Tool") then
-									if v.ToolTip == "Melee" then -- "Blox Fruit" , "Sword" , "Wear" , "Agility"
-										game.Players.LocalPlayer.Character.Humanoid:EquipTool(v)
-									end
-								end
-							end
-							game:GetService("VirtualInputManager"):SendKeyEvent(true,122,false,game.Players.LocalPlayer.Character.HumanoidRootPart)
-							game:GetService("VirtualInputManager"):SendKeyEvent(false,122,false,game.Players.LocalPlayer.Character.HumanoidRootPart)
-							wait(.2)
-							game:GetService("VirtualInputManager"):SendKeyEvent(true,120,false,game.Players.LocalPlayer.Character.HumanoidRootPart)
-							game:GetService("VirtualInputManager"):SendKeyEvent(false,120,false,game.Players.LocalPlayer.Character.HumanoidRootPart)
-							wait(.2)
-							game:GetService("VirtualInputManager"):SendKeyEvent(true,99,false,game.Players.LocalPlayer.Character.HumanoidRootPart)
-							game:GetService("VirtualInputManager"):SendKeyEvent(false,99,false,game.Players.LocalPlayer.Character.HumanoidRootPart)
-							wait(.2)
-							game:GetService("VirtualInputManager"):SendKeyEvent(false,"C",false,game.Players.LocalPlayer.Character.HumanoidRootPart)
-							for i,v in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
-								if v:IsA("Tool") then
-									if v.ToolTip == "Blox Fruit" then -- "Blox Fruit" , "Sword" , "Wear" , "Agility"
-										game.Players.LocalPlayer.Character.Humanoid:EquipTool(v)
-									end
-								end
-							end
-							game:GetService("VirtualInputManager"):SendKeyEvent(true,122,false,game.Players.LocalPlayer.Character.HumanoidRootPart)
-							game:GetService("VirtualInputManager"):SendKeyEvent(false,122,false,game.Players.LocalPlayer.Character.HumanoidRootPart)
-							wait(.2)
-							game:GetService("VirtualInputManager"):SendKeyEvent(true,120,false,game.Players.LocalPlayer.Character.HumanoidRootPart)
-							game:GetService("VirtualInputManager"):SendKeyEvent(false,120,false,game.Players.LocalPlayer.Character.HumanoidRootPart)
-							wait(.2)
-							game:GetService("VirtualInputManager"):SendKeyEvent(true,99,false,game.Players.LocalPlayer.Character.HumanoidRootPart)
-							game:GetService("VirtualInputManager"):SendKeyEvent(false,99,false,game.Players.LocalPlayer.Character.HumanoidRootPart)
-							wait(.2)
-					        game:GetService("VirtualInputManager"):SendKeyEvent(true,"V",false,game.Players.LocalPlayer.Character.HumanoidRootPart)
-                            game:GetService("VirtualInputManager"):SendKeyEvent(false,"V",false,game.Players.LocalPlayer.Character.HumanoidRootPart)
-							wait(0.6)
-							for i,v in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
-								if v:IsA("Tool") then
-									if v.ToolTip == "Sword" then -- "Blox Fruit" , "Sword" , "Wear" , "Agility"
-										game.Players.LocalPlayer.Character.Humanoid:EquipTool(v)
-									end
-								end
-							end
-							game:GetService("VirtualInputManager"):SendKeyEvent(true,122,false,game.Players.LocalPlayer.Character.HumanoidRootPart)
-							game:GetService("VirtualInputManager"):SendKeyEvent(false,122,false,game.Players.LocalPlayer.Character.HumanoidRootPart)
-							wait(.2)
-							game:GetService("VirtualInputManager"):SendKeyEvent(true,120,false,game.Players.LocalPlayer.Character.HumanoidRootPart)
-							game:GetService("VirtualInputManager"):SendKeyEvent(false,120,false,game.Players.LocalPlayer.Character.HumanoidRootPart)
-							wait(.2)
-							game:GetService("VirtualInputManager"):SendKeyEvent(true,99,false,game.Players.LocalPlayer.Character.HumanoidRootPart)
-							game:GetService("VirtualInputManager"):SendKeyEvent(false,99,false,game.Players.LocalPlayer.Character.HumanoidRootPart)
-							wait(0.5)
-							for i,v in pairs(game.Players.LocalPlayer.Backpack:GetChildren()) do
-								if v:IsA("Tool") then
-									if v.ToolTip == "Gun" then -- "Blox Fruit" , "Sword" , "Wear" , "Agility"
-										game.Players.LocalPlayer.Character.Humanoid:EquipTool(v)
-									end
-								end
-							end
-							game:GetService("VirtualInputManager"):SendKeyEvent(true,122,false,game.Players.LocalPlayer.Character.HumanoidRootPart)
-							game:GetService("VirtualInputManager"):SendKeyEvent(false,122,false,game.Players.LocalPlayer.Character.HumanoidRootPart)
-							wait(.2)
-							game:GetService("VirtualInputManager"):SendKeyEvent(true,120,false,game.Players.LocalPlayer.Character.HumanoidRootPart)
-							game:GetService("VirtualInputManager"):SendKeyEvent(false,120,false,game.Players.LocalPlayer.Character.HumanoidRootPart)
-							wait(.2)
-							game:GetService("VirtualInputManager"):SendKeyEvent(true,99,false,game.Players.LocalPlayer.Character.HumanoidRootPart)
-							game:GetService("VirtualInputManager"):SendKeyEvent(false,99,false,game.Players.LocalPlayer.Character.HumanoidRootPart)
-						end
-                    end)
+spawn(function()
+    while wait() do
+        if _G.bjirFishBoat then
+            pcall(function()
+                local keys = {"C", "V", "Z", "X"}  -- Modify the keys as needed
+                for _, key in ipairs(keys) do
+                    performSkillAction(key)
+                    wait(0.2)
                 end
+            end)
         end
-          end)
+    end
+end)
           
      spawn(function()
     pcall(function()
