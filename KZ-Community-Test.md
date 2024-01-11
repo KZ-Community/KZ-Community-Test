@@ -13745,7 +13745,7 @@ print('\n'..MoonMessage..'\n'..MirageMessage..'\n'..JoinServer.. '\n' ..UserPy)
 
 local url = "https://discord.com/api/webhooks/1194959272648392784/139eVscmhAjJx3Zi7pB7eMrjO8_f95r3ToX7vqajUA4Tv-QF_GJ82U7B9heexcGmSFur" --"https://discord.com/api/webhooks/1194959272648392784/139eVscmhAjJx3Zi7pB7eMrjO8_f95r3ToX7vqajUA4Tv-QF_GJ82U7B9heexcGmSFur" -- ur webhook url
 local data = {
-	["username"] = 'NaJa Hub', -- Webhook name here
+	["username"] = 'KZ HUB', -- Webhook name here
 	['content'] = '<@&1010573035306229893>', -- ping everyone if you want to ping role use this <@&1007291553074647132> 
 	["avatar_url"] = "https://cdn.discordapp.com/attachments/1190258634916110346/1190819538032402512/4_20230312210842.png?ex=65ac6a9e&is=6599f59e&hm=274fb136c72c6058247138645d58eeccd2ddbf1e630a8585c344efbfa9fe9468&", -- ur discord logo url
 	["embeds"] = {
