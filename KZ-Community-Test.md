@@ -1105,7 +1105,7 @@ Setting:Toggle("Bring Mob",true,function(Mag)
     end)
     
 local Bring = {"Low", "Normal", "Super Bring"}
-_G.BringMode = "Normal"
+_G.BringMode = "Low"
 Setting:Dropdown("Bring Mob Mode", Bring,function(value)
     _G.BringMode = value
 end)
