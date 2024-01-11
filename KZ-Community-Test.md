@@ -6757,52 +6757,34 @@ M:Toggle("Auto Tushita", _G.Autotushita,function(value)
         StopTween( _G.DomadicAutoDriveBoat)
     end)
     
-local Players = game:GetService("Players")
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local Workspace = game:GetService("Workspace")
-
-local LocalPlayer = Players.LocalPlayer
-local Character = LocalPlayer.Character
-local HumanoidRootPart = Character:WaitForChild("HumanoidRootPart")
-local Humanoid = Character:WaitForChild("Humanoid")
-local Remotes = ReplicatedStorage.Remotes
-
-local function buyBoat()
-    local buyb = TPP(CFrame.new(-16927.451171875, 9.0863618850708, 433.8642883300781))
-    if (buyb.Position - HumanoidRootPart.Position).magnitude <= 10 then
-        if buyb then buyb:Stop() end
-        Remotes.CommF_:InvokeServer("BuyBoat", "PirateBrigade")
-    end
-end
-
 spawn(function()
     while wait() do
         pcall(function()
             if _G.DomadicAutoDriveBoat then
-                local enemies = Workspace.Enemies
-                local boats = Workspace.Boats
+                local enemies = game.Workspace.Enemies
+                local boats = game.Workspace.Boats
 
                 if not enemies:FindFirstChild("Shark") or not enemies:FindFirstChild("Terrorshark") or not enemies:FindFirstChild("Piranha") or not enemies:FindFirstChild("Fish Crew Member") then
                     if not boats:FindFirstChild("PirateBrigade") then
-                        buyBoat()
-                    elseif LocalPlayer.Character.Humanoid.Sit == false then
+                        local buyb = TPP(CFrame.new(-16927.451171875, 9.0863618850708, 433.8642883300781))
+                        if (buyb.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).magnitude <= 10 then
+                            buyb:Stop()
+                            local args = {
+                                [1] = "BuyBoat",
+                                [2] = "PirateBrigade"
+                            }
+                            game.ReplicatedStorage.Remotes.CommF_:InvokeServer(unpack(args))
+                        end
+                    elseif not game.Players.LocalPlayer.Character.Humanoid.Sit then
                         TPP(boats.PirateBrigade.VehicleSeat.CFrame * CFrame.new(0,1,0))
                     else
-                        for _, boat in pairs(boats:GetChildren()) do
-                            if boat.Name == "PirateBrigade" then
-                                repeat wait()
-                                    local positions = {
-                                        CFrame.new(-17013.80078125, 10.962434768676758, 438.0169982910156),
-                                        CFrame.new(-33163.1875, 10.964323997497559, -324.4842224121094),
-                                        CFrame.new(-37952.49609375, 10.96342945098877, -1324.12109375),
-                                    }
-
-                                    for _, position in pairs(positions) do
-                                        if (position.Position - HumanoidRootPart.Position).magnitude <= 10 then
-                                            TPB(position)
-                                        end
-                                    end
-                                until enemies:FindFirstChild("Shark") or enemies:FindFirstChild("Terrorshark") or enemies:FindFirstChild("Piranha") or enemies:FindFirstChild("Fish Crew Member") or _G.DomadicAutoDriveBoat == false
+                        for _, position in pairs({
+                            CFrame.new(-17013.80078125, 10.962434768676758, 438.0169982910156),
+                            CFrame.new(-33163.1875, 10.964323997497559, -324.4842224121094),
+                            CFrame.new(-37952.49609375, 10.96342945098877, -1324.12109375),
+                        }) do
+                            if (position.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).magnitude <= 10 then
+                                TPB(position)
                             end
                         end
                     end
@@ -6816,14 +6798,13 @@ spawn(function()
     pcall(function()
         while wait() do
             if _G.DomadicAutoDriveBoat then
-                if Workspace.Enemies:FindFirstChild("Shark") or Workspace.Enemies:FindFirstChild("Terrorshark") or Workspace.Enemies:FindFirstChild("Piranha") or Workspace.Enemies:FindFirstChild("Fish Crew Member") then
-                    Humanoid.Sit = false
+                if game.Workspace.Enemies:FindFirstChild("Shark") or game.Workspace.Enemies:FindFirstChild("Terrorshark") or game.Workspace.Enemies:FindFirstChild("Piranha") or game.Workspace.Enemies:FindFirstChild("Fish Crew Member") then
+                    game.Players.LocalPlayer.Character.Humanoid.Sit = false
                 end
             end
         end
     end)
 end)
-	
 
     M:Toggle("Auto Farm Terrorshark", _G.AutoTerrorshark,function(value)
          _G.AutoTerrorshark = value
