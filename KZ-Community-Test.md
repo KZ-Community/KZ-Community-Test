@@ -10775,7 +10775,7 @@ end)
         StopTween(_G.Auto_Dungeon)
     end)
     
-        spawn(function()
+    spawn(function()
         pcall(function()
             while wait() do
                 if _G.Auto_Dungeon then
@@ -10798,21 +10798,20 @@ end)
     end)
     
     Type = 1
-spawn(functiType = 1
 spawn(function()
     while wait(.1) do
         if Type == 1 then
-            RaidPos = CFrame.new(0,28,0)
+            RaidPos = CFrame.new(0,25,0)
 		elseif Type == 2 then
-			RaidPos = CFrame.new(0,28,0)
+			RaidPos = CFrame.new(0,20,0)
 		elseif Type == 3 then
-			RaidPos = CFrame.new(0,28,0)
+			RaidPos = CFrame.new(0,25,0)
 		elseif Type == 4 then
-			RaidPos = CFrame.new(0,28,0)
+			RaidPos = CFrame.new(0,20,0)
 		elseif Type == 5 then
-			RaidPos = CFrame.new(0,28,0)
+			RaidPos = CFrame.new(0,25,0)
 		elseif Type == 6 then
-			RaidPos = CFrame.new(0,28,0)
+			RaidPos = CFrame.new(0,20,0)
         end
         end
     end)
@@ -10870,6 +10869,8 @@ R:Toggle("Auto Awakener",_G.Auto_Awakener,function(value)
             end
         end)
     end)
+    
+    R:Line()
 
     _G.SelectChip = selectraids or ""
 	Raidslist = {}
@@ -10883,6 +10884,10 @@ R:Toggle("Auto Awakener",_G.Auto_Awakener,function(value)
 	
     R:Dropdown("Select Chips",Raidslist,function(value)
         _G.SelectChip = value
+    end)
+    
+    R:Toggle("Auto Select Dungeon",_G.AutoSelectDungeon,function(value)
+        _G.AutoSelectDungeon = value
     end)
     
     spawn(function()
@@ -10921,20 +10926,36 @@ R:Toggle("Auto Awakener",_G.Auto_Awakener,function(value)
         end
     end)
     
-spawn(function()
-    while wait(.1) do
+    R:Toggle("Auto Buy Chip",_G.AutoBuyChip,function(value)
+        _G.AutoBuyChip = value
+    end)
+    
+    spawn(function()
         pcall(function()
-            if _G.Auto_Dungeon then
-                game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("RaidsNpc", "Select", _G.SelectChip)
+            while wait() do
+                if _G.AutoBuyChip then
+                    if not game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("Special Microchip") or not game:GetService("Players").LocalPlayer.Character:FindFirstChild("Special Microchip") then
+                        if not game:GetService("Workspace")["_WorldOrigin"].Locations:FindFirstChild("Island 1") then
+                            game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("RaidsNpc", "Select", _G.SelectChip)
+                        end
+                    end
+                end
             end
         end)
-    end
-end)
+    end)
+    
+    R:Button("Buy Chip Select",function()
+        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("RaidsNpc","Select",_G.SelectChip)
+    end)
+    
+    R:Toggle("Auto Start Go To Dungeon",_G.Auto_StartRaid,function(value)
+        _G.Auto_StartRaid = value
+    end)
     
     spawn(function()
         while wait(.1) do
             pcall(function()
-                if _G.Auto_Dungeon then
+                if _G.Auto_StartRaid then
                     if game:GetService("Players")["LocalPlayer"].PlayerGui.Main.Timer.Visible == false then
                         if not game:GetService("Workspace")["_WorldOrigin"].Locations:FindFirstChild("Island 1") and game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("Special Microchip") or game:GetService("Players").LocalPlayer.Character:FindFirstChild("Special Microchip") then
                             if World2 then
@@ -10947,6 +10968,30 @@ end)
                 end
             end)
         end
+    end)
+    
+    R:Button("Start Go To Dungeon",function()
+        if World2 then
+            fireclickdetector(game:GetService("Workspace").Map.CircleIsland.RaidSummon2.Button.Main.ClickDetector)
+        elseif World3 then
+            fireclickdetector(game:GetService("Workspace").Map["Boat Castle"].RaidSummon2.Button.Main.ClickDetector)
+        end
+    end)
+    
+        R:Button("Next Island",function()
+        pcall(function()
+            if game:GetService("Workspace")["_WorldOrigin"].Locations:FindFirstChild("Island 5") then
+                topos(game:GetService("Workspace")["_WorldOrigin"].Locations:FindFirstChild("Island 5").CFrame*CFrame.new(0,70,100))
+            elseif game:GetService("Workspace")["_WorldOrigin"].Locations:FindFirstChild("Island 4") then
+                topos(game:GetService("Workspace")["_WorldOrigin"].Locations:FindFirstChild("Island 4").CFrame*CFrame.new(0,70,100))
+            elseif game:GetService("Workspace")["_WorldOrigin"].Locations:FindFirstChild("Island 3") then
+                topos(game:GetService("Workspace")["_WorldOrigin"].Locations:FindFirstChild("Island 3").CFrame*CFrame.new(0,70,100))
+            elseif game:GetService("Workspace")["_WorldOrigin"].Locations:FindFirstChild("Island 2") then
+                topos(game:GetService("Workspace")["_WorldOrigin"].Locations:FindFirstChild("Island 2").CFrame*CFrame.new(0,70,100))
+            elseif game:GetService("Workspace")["_WorldOrigin"].Locations:FindFirstChild("Island 1") then
+                topos(game:GetService("Workspace")["_WorldOrigin"].Locations:FindFirstChild("Island 1").CFrame*CFrame.new(0,70,100))
+            end
+        end)
     end)
     
     R:Line()
@@ -13646,9 +13691,106 @@ end)
 if game:GetService("ReplicatedStorage").Effect.Container:FindFirstChild("Death") then
     game:GetService("ReplicatedStorage").Effect.Container.Death:Destroy()
 end
-
 if game:GetService("ReplicatedStorage").Effect.Container:FindFirstChild("Respawn") then
     game:GetService("ReplicatedStorage").Effect.Container.Respawn:Destroy()
+end
+
+if World3 then
+local Moon = {
+['8'] = "http://www.roblox.com/asset/?id=9709149431", -- 🌕
+['7'] = "http://www.roblox.com/asset/?id=9709149052", -- 🌖
+['6'] = "http://www.roblox.com/asset/?id=9709143733", -- 🌗
+['5'] = "http://www.roblox.com/asset/?id=9709150401", -- 🌘
+['4'] = "http://www.roblox.com/asset/?id=9709135895",  -- 🌑
+['3'] = "http://www.roblox.com/asset/?id=9709139597", -- 🌒
+['2'] = "http://www.roblox.com/asset/?id=9709150086", -- 🌓
+['1'] = "http://www.roblox.com/asset/?id=9709149680", -- 🌔
+};
+for i,v in pairs(Moon) do
+	if game:GetService("Lighting").Sky.MoonTextureId == v then
+		MoonPercent = i / 8 * 100
+	end
+end
+
+for i,v in pairs(game.Players:GetPlayers()) do
+	PlayersMin = i
+end
+
+if game:GetService("Lighting").Sky.MoonTextureId == Moon['1'] then
+	MoonIcon = '🌔'
+elseif game:GetService("Lighting").Sky.MoonTextureId == Moon['2'] then
+	MoonIcon = '🌓'
+elseif game:GetService("Lighting").Sky.MoonTextureId == Moon['3'] then
+	MoonIcon = '🌒'
+elseif game:GetService("Lighting").Sky.MoonTextureId == Moon['4'] then
+	MoonIcon = '🌑'
+elseif game:GetService("Lighting").Sky.MoonTextureId == Moon['5'] then
+	MoonIcon = '🌘'
+elseif game:GetService("Lighting").Sky.MoonTextureId == Moon['6'] then
+	MoonIcon = '🌗'
+elseif game:GetService("Lighting").Sky.MoonTextureId == Moon['7'] then
+	MoonIcon = '🌖'
+elseif game:GetService("Lighting").Sky.MoonTextureId == Moon['8'] then
+	MoonIcon = '🌕'
+end
+if game.Workspace._WorldOrigin.Locations:FindFirstChild('Mirage Island') then
+	MirageMessage = '```Mirage is spawing : ✔```'
+else
+	MirageMessage = '```Mirage isn\'t spawn : ❌```'
+end
+local UserPy = game.Players.LocalPlayer.Name
+--local pfp = "https://www.roblox.com/headshot-thumbnail/image?userId=".. game.Players.LocalPlayer.UserId .."&width=420&height=420&format=png"
+MoonMessage = '```'..tostring(MoonPercent..'%'..' : '..MoonIcon)..'```'
+JoinServer = 'game:GetService("TeleportService"):TeleportToPlaceInstance(game.PlaceId,'..'\''..tostring(game.JobId)..'\''..')'
+print('\n'..MoonMessage..'\n'..MirageMessage..'\n'..JoinServer.. '\n' ..UserPy)
+
+local url = "https://discord.com/api/webhooks/1194959272648392784/139eVscmhAjJx3Zi7pB7eMrjO8_f95r3ToX7vqajUA4Tv-QF_GJ82U7B9heexcGmSFur" --"https://discord.com/api/webhooks/1194959272648392784/139eVscmhAjJx3Zi7pB7eMrjO8_f95r3ToX7vqajUA4Tv-QF_GJ82U7B9heexcGmSFur" -- ur webhook url
+local data = {
+	["username"] = 'KZ HUB', -- Webhook name here
+	['content'] = '<@&1010573035306229893>', -- ping everyone if you want to ping role use this <@&1007291553074647132> 
+	["avatar_url"] = "https://cdn.discordapp.com/attachments/1190258634916110346/1190819538032402512/4_20230312210842.png?ex=65ac6a9e&is=6599f59e&hm=274fb136c72c6058247138645d58eeccd2ddbf1e630a8585c344efbfa9fe9468&", -- ur discord logo url
+	["embeds"] = {
+		{
+			["description"] = "**__Moon and Mirage Webhook__**",
+			["color"] = tonumber(0x00ff00), -- color id		
+			["type"] = "rich",
+			["fields"] =  {
+			    {
+					["name"] = "[🕑] Moon Check",
+					["value"] = MoonMessage,
+					["inline"] = true
+				},
+				{
+					["name"] = "[🌲] Mirage Check",
+					["value"] = MirageMessage,
+					["inline"] = true
+				},
+				{
+					["name"] = "[👥] Players Active",
+					["value"] = '```'..tostring(PlayersMin)..'/12```'
+				},
+				{
+					["name"] = "[📃] JobID",
+					["value"] = '```'..tostring(game.JobId)..'```'
+				},
+				{
+					["name"] = "[📁] Join Server",
+					["value"] = '```'..JoinServer..'```',
+				}
+				
+			},
+			["footer"] = {
+				["text"] = 'ผู้ค้นเจอ '..UserPy, -- you can remove this but it will hurt "Webhook By Toshi#2667"
+			},
+			["timestamp"] = DateTime.now():ToIsoDate(),
+		}
+	},
+}
+local newdata = game:GetService("HttpService"):JSONEncode(data)
+local headers = {["content-type"] = "application/json"}
+request = http_request or request or HttpPost or syn.request
+local abcdef = {Url = url, Body = newdata, Method = "POST", Headers = headers}
+request(abcdef)
 end
 
 print("KZ Hub Load Complete")
