@@ -10801,17 +10801,17 @@ end)
 spawn(function()
     while wait(.1) do
         if Type == 1 then
-            RaidPos = CFrame.new(0,25,0)
+            RaidPos = CFrame.new(0,30,0)
 		elseif Type == 2 then
-			RaidPos = CFrame.new(0,20,0)
+			RaidPos = CFrame.new(0,30,0)
 		elseif Type == 3 then
-			RaidPos = CFrame.new(0,25,0)
+			RaidPos = CFrame.new(0,30,0)
 		elseif Type == 4 then
-			RaidPos = CFrame.new(0,20,0)
+			RaidPos = CFrame.new(0,30,0)
 		elseif Type == 5 then
-			RaidPos = CFrame.new(0,25,0)
+			RaidPos = CFrame.new(0,30,0)
 		elseif Type == 6 then
-			RaidPos = CFrame.new(0,20,0)
+			RaidPos = CFrame.new(0,30,0)
         end
         end
     end)
