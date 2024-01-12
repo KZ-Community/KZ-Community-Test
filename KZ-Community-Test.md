@@ -10870,8 +10870,6 @@ R:Toggle("Auto Awakener",_G.Auto_Awakener,function(value)
             end
         end)
     end)
-    
-    R:Line()
 
     _G.SelectChip = selectraids or ""
 	Raidslist = {}
