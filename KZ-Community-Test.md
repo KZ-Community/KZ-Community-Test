@@ -6784,7 +6784,7 @@ spawn(function()
                         game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
 
                         -- Add a delay here (adjust the time according to your needs)
-                        wait(5)
+                        wait(20)
                     elseif game:GetService("Workspace").Boats:FindFirstChild("PirateBrigade") then
                         local vehicleSeatCFrame = game:GetService("Workspace").Boats.PirateBrigade.VehicleSeat.CFrame * CFrame.new(0,1,0)
 
