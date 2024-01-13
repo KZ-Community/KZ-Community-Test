@@ -12384,24 +12384,24 @@ spawn(function()
 	    end
     end)
     
-E:Toggle("ESP Island",IslandESP,function(value)
+    E:Toggle("ESP Island",IslandESP,function(value)
         IslandESP = value
         while IslandESP do wait()
             UpdateIslandESP() 
         end
     end)
-    Misc:Toggle("Esp Npc", false, function(nec)
+    
+    E:Toggle("Esp Npc", false, function(nec)
     NpcESP = nec
-end)
+    end)
 
-E:Toggle("Esp Sea Beast", false, function(nec)
-    SeaESP = nec
-end)
+   E:Toggle("Esp Sea Beast", false, function(nec)
+   SeaESP = nec
+   end)
 
-
-E:Toggle("Esp Mob", false, function(nec)
+    E:Toggle("Esp Mob", false, function(nec)
     MobESP = nec
-end)
+    end)
 
 E:Toggle("Esp Mystic Island", false, function(value)
     MirageIslandESP = value
@@ -12503,6 +12503,10 @@ E:Toggle("Esp Gear [Beta]", false, function(value)
         end
     end)
     
+    Misc:Button("Join Sever [BETA]",function()
+	game:GetService("TeleportService"):TeleportToPlaceInstance(game.placeId,_G.Job, game.Players.LocalPlayer)
+	end)
+    
     Misc:Button("Copy Job Id",function()
 	setclipboard(tostring(game.JobId))
 	end)
@@ -12510,10 +12514,11 @@ E:Toggle("Esp Gear [Beta]", false, function(value)
     Misc:Textbox("Place Job Id", true, function(value)
 	_G.Job = value
 	end)
+	
+	Misc:Button("Copy CFrame",function()
+    setclipboard(tostring(game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame))
+    end)
 
-	Misc:Button("Join Sever [BETA]",function()
-	game:GetService("TeleportService"):TeleportToPlaceInstance(game.placeId,_G.Job, game.Players.LocalPlayer)
-	end)
 	
     Misc:Seperator("Misc")
     
