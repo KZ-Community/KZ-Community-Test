@@ -12329,7 +12329,7 @@ spawn(function()
 	UpdateChestChams() 
     end)
     
-    E:Toggle("ESP Fruit",true,function(a)
+    E:Toggle("ESP Fruit",false,function(a)
         DevilFruitESP = a
         while DevilFruitESP do wait()
             UpdateDevilChams() 
