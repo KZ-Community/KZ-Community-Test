@@ -6812,15 +6812,16 @@ end)
 
 -- Add the following condition to the existing code
 spawn(function()
-    pcall(function()
-        while wait() do
-            if not game:GetService("Workspace").Boats:FindFirstChild("PirateBrigade") then
-                game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("requestEntrance",Vector3.new(-5079.44677734375, 313.7293395996094, -3151.065185546875))
+    while wait() do
+        pcall(function()
+            if _G.DomadicAutoDriveBoat then
+                if not game:GetService("Workspace").Boats:FindFirstChild("PirateBrigade") then
+                    game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("requestEntrance", Vector3.new(-5079.44677734375, 313.7293395996094, -3151.065185546875))
+                end
             end
-        end
-    end)
+        end)
+    end
 end)
-
 
     M:Toggle("Auto Farm Terrorshark", _G.AutoTerrorshark,function(value)
          _G.AutoTerrorshark = value
