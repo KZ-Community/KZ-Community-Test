@@ -15535,11 +15535,21 @@ Misc:Toggle("Remove Fog",RemoveFog,function(value)
         end
     end)
     
-    Misc:Button("Always Day",function()
-    game:GetService("RunService").Heartbeat:wait() do
-        game:GetService("Lighting").ClockTime = 12
+    local alwaysDayEnabled = false
+
+Misc:Toggle("Always Day", function(state)
+    alwaysDayEnabled = state
+end)
+
+spawn(function()
+    while true do
+        if alwaysDayEnabled then
+            game:GetService("RunService").Heartbeat:wait()
+            game:GetService("Lighting").ClockTime = 12
+        end
+        wait(1)
     end
-    end)
+end)
     
     Misc:Toggle("Remove Damage",function()
 		for i,v in pairs(game.Workspace:GetDescendants()) do
