@@ -2407,7 +2407,7 @@ spawn(function()
                             TextLabel.Size = UDim2.new(0, 200, 0, 50)
                             TextLabel.Font = Enum.Font.GothamBold
                             TextLabel.TextColor3 = Color3.fromRGB(255, 51, 51)
-                            TextLabel.Text.Size = 100
+                            TextLabel.Text.Size = 35
                         end
                         local Dis = math.floor((game.Players.LocalPlayer.Character.HumanoidRootPart.Position - v.HumanoidRootPart.Position).Magnitude)
                         v.NpcEspes.TextLabel.Text = v.Name.." - "..Dis.." Distance"
