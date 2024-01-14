@@ -2896,7 +2896,6 @@ function TPB(CFgo)
 	return tweenfunc
 end
 
-
 function TPP(CFgo)
 	if game.Players.LocalPlayer.Character:WaitForChild("Humanoid").Health <= 0 or not game:GetService("Players").LocalPlayer.Character:WaitForChild("Humanoid") then tween:Cancel() repeat wait() until game:GetService("Players").LocalPlayer.Character:WaitForChild("Humanoid") and game:GetService("Players").LocalPlayer.Character:WaitForChild("Humanoid").Health > 0 wait(7) return end
 	local tween_s = game:service"TweenService"
@@ -5407,20 +5406,22 @@ end
     
     Main:Seperator("Boss")
     
-    local Boss = {}
+local Boss = {}
 
-for i, v in pairs(game:GetService("ReplicatedStorage"):GetChildren()) do
-    if string.find(v.Name, "Boss") then
-        if v.Name == "Ice Admiral" then
-            else
-            table.insert(Boss, v.Name)
-        end
+for _, v in pairs(game:GetService("ReplicatedStorage"):GetChildren()) do
+    if string.find(v.Name, "Boss") and v.Name ~= "Ice Admiral" then
+        table.insert(Boss, v.Name)
     end
 end
 
 local bossCheck = {}
-local bossNames = { "The Gorilla King", "Bobby", "The Saw", "Yeti", "Mob Leader", "Vice Admiral", "Warden", "Chief Warden", "Swan", "Saber Expert", "Magma Admiral", "Fishman Lord", "Wysper", "Thunder God", "Cyborg", "Greybeard", "Diamond", "Jeremy", "Fajita", "Don Swan", "Smoke Admiral", "Awakened Ice Admiral", "Tide Keeper", "Order", "Darkbeard", "Cursed Captain", "Stone", "Island Empress", "Kilo Admiral", "Captain Elephant", "Beautiful Pirate", "Longma", "Cake Queen", "Soul Reaper", "Rip_Indra", "Cake Prince", "Dough King" }
-
+local bossNames = {
+    "The Gorilla King", "Bobby", "The Saw", "Yeti", "Mob Leader", "Vice Admiral", "Warden", "Chief Warden", "Swan", 
+    "Saber Expert", "Magma Admiral", "Fishman Lord", "Wysper", "Thunder God", "Cyborg", "Greybeard", "Diamond", 
+    "Jeremy", "Fajita", "Don Swan", "Smoke Admiral", "Awakened Ice Admiral", "Tide Keeper", "Order", "Darkbeard", 
+    "Cursed Captain", "Stone", "Island Empress", "Kilo Admiral", "Captain Elephant", "Beautiful Pirate", "Longma", 
+    "Cake Queen", "Soul Reaper", "Rip_Indra", "Cake Prince", "Dough King"
+}
 
 if World1 or World2 or World3 then
     for _, bossName in pairs(bossNames) do
@@ -5434,22 +5435,27 @@ for _, name in pairs(Boss) do
     table.insert(bossCheck, name)
 end
 
-
 local BossName = Main:Dropdown("Select Boss", bossCheck, function(value)
     _G.SelectBoss = value
 end)
 
 Main:Button("Refresh Boss", function()
-BossName:Clear()
-wait(0.1)
-for i, v in pairs(game:GetService("ReplicatedStorage"):GetChildren()) do
-    if (v.Name == "rip_indra" or v.Name == "Ice Admiral")
-                        or (v.Name == "Saber Expert" or v.Name == "The Saw" or v.Name == "Greybeard" or v.Name == "Mob Leader" or v.Name == "The Gorilla King" or v.Name == "Bobby" or v.Name == "Yeti" or v.Name == "Vice Admiral" or v.Name == "Warden" or v.Name == "Chief Warden" or v.Name == "Swan" or v.Name == "Magma Admiral" or v.Name == "Fishman Lord" or v.Name == "Wysper" or v.Name == "Thunder God" or v.Name == "Cyborg")
-                        or (v.Name == "Don Swan" or v.Name == "Diamond" or v.Name == "Jeremy" or v.Name == "Fajita" or v.Name == "Smoke Admiral" or v.Name == "Awakened Ice Admiral" or v.Name == "Tide Keeper" or v.Name == "Order" or v.Name == "Darkbeard")
-                        or (v.Name == "Stone" or v.Name == "Island Empress" or v.Name == "Kilo Admiral" or v.Name == "Captain Elephant" or v.Name == "Beautiful Pirate" or v.Name == "Cake Queen" or v.Name == "rip_indra True Form" or v.Name == "Longma" or v.Name == "Soul Reaper" or v.Name == "Cake Prince" or v.Name == "Dough King") then
-        BossName:Add(v.Name)
+    BossName:Clear()
+    wait(0.1)
+
+    local validBossNames = {
+        "rip_indra", "Ice Admiral", "Saber Expert", "The Saw", "Greybeard", "Mob Leader", "The Gorilla King", "Bobby", 
+        "Yeti", "Vice Admiral", "Warden", "Chief Warden", "Swan", "Magma Admiral", "Fishman Lord", "Wysper", "Thunder God", 
+        "Cyborg", "Don Swan", "Diamond", "Jeremy", "Fajita", "Smoke Admiral", "Awakened Ice Admiral", "Tide Keeper", 
+        "Order", "Darkbeard", "Stone", "Island Empress", "Kilo Admiral", "Captain Elephant", "Beautiful Pirate", 
+        "Cake Queen", "rip_indra True Form", "Longma", "Soul Reaper", "Cake Prince", "Dough King"
+    }
+
+    for _, v in pairs(game:GetService("ReplicatedStorage"):GetChildren()) do
+        if table.find(validBossNames, v.Name) then
+            BossName:Add(v.Name)
+        end
     end
-end
 end)
     Main:Toggle("Auto Farm Boss",_G.AutoFarmBoss,function(value)
         game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("AbandonQuest")
@@ -5458,70 +5464,69 @@ end)
     end)
     
     spawn(function()
-        while wait() do
-            if _G.AutoFarmBoss and BypassTP then
-                pcall(function()
-                    if game:GetService("Workspace").Enemies:FindFirstChild(_G.SelectBoss) then
-                        for i,v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
-                            if v.Name == _G.SelectBoss then
-                                if v:FindFirstChild("Humanoid") and v:FindFirstChild("HumanoidRootPart") and v.Humanoid.Health > 0 then
-                                    repeat task.wait()
-                                        AutoHaki()
-                                        EquipWeapon(_G.SelectWeapon)
-                                        v.HumanoidRootPart.CanCollide = false
-                                        v.Humanoid.WalkSpeed = 0
-                                        v.HumanoidRootPart.Size = Vector3.new(80,80,80)                             
-                                        topos(v.HumanoidRootPart.CFrame * Pos)
-                                        game:GetService("VirtualUser"):CaptureController()
-                                        game:GetService("VirtualUser"):Button1Down(Vector2.new(1280,672))
-                                        sethiddenproperty(game:GetService("Players").LocalPlayer,"SimulationRadius",math.huge)
-                                    until not _G.AutoFarmBoss or not v.Parent or v.Humanoid.Health <= 0
-                                end
-                            end
-                        end
-                    elseif game.ReplicatedStorage:FindFirstChild(_G.SelectBoss) then
-						if ((game.ReplicatedStorage:FindFirstChild(_G.SelectBoss).HumanoidRootPart.CFrame).Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).magnitude <= 1500 then
-							topos(game.ReplicatedStorage:FindFirstChild(_G.SelectBoss).HumanoidRootPart.CFrame)
-						else
-							BTP(game.ReplicatedStorage:FindFirstChild(_G.SelectBoss).HumanoidRootPart.CFrame)
-					    end
+    while wait() do
+        if _G.AutoFarmBoss and BypassTP then
+            pcall(function()
+                local selectedBoss = game:GetService("Workspace").Enemies:FindFirstChild(_G.SelectBoss) or game.ReplicatedStorage:FindFirstChild(_G.SelectBoss)
+                
+                if selectedBoss then
+                    if selectedBoss:FindFirstChild("Humanoid") and selectedBoss:FindFirstChild("HumanoidRootPart") and selectedBoss.Humanoid.Health > 0 then
+                        repeat task.wait()
+                            AutoHaki()
+                            EquipWeapon(_G.SelectWeapon)
+                            selectedBoss.HumanoidRootPart.CanCollide = false
+                            selectedBoss.Humanoid.WalkSpeed = 0
+                            selectedBoss.HumanoidRootPart.Size = Vector3.new(80,80,80)                             
+                            topos(selectedBoss.HumanoidRootPart.CFrame * Pos)
+                            game:GetService("VirtualUser"):CaptureController()
+                            game:GetService("VirtualUser"):Button1Down(Vector2.new(1280,672))
+                            sethiddenproperty(game:GetService("Players").LocalPlayer,"SimulationRadius",math.huge)
+                        until not _G.AutoFarmBoss or not selectedBoss.Parent or selectedBoss.Humanoid.Health <= 0
                     end
-                end)
-            end
-        end
-    end)
-    
-    spawn(function()
-        while wait() do
-            if _G.AutoFarmBoss and not BypassTP then
-                pcall(function()
-                    if game:GetService("Workspace").Enemies:FindFirstChild(_G.SelectBoss) then
-                        for i,v in pairs(game:GetService("Workspace").Enemies:GetChildren()) do
-                            if v.Name == _G.SelectBoss then
-                                if v:FindFirstChild("Humanoid") and v:FindFirstChild("HumanoidRootPart") and v.Humanoid.Health > 0 then
-                                    repeat task.wait()
-                                        AutoHaki()
-                                        EquipWeapon(_G.SelectWeapon)
-                                        v.HumanoidRootPart.CanCollide = false
-                                        v.Humanoid.WalkSpeed = 0
-                                        v.HumanoidRootPart.Size = Vector3.new(80,80,80)                             
-                                        topos(v.HumanoidRootPart.CFrame * (Farm_pos))
-                                        game:GetService("VirtualUser"):CaptureController()
-                                        game:GetService("VirtualUser"):Button1Down(Vector2.new(1280,672))
-                                        sethiddenproperty(game:GetService("Players").LocalPlayer,"SimulationRadius",math.huge)
-                                    until not _G.AutoFarmBoss or not v.Parent or v.Humanoid.Health <= 0
-                                end
-                            end
-                        end
+                elseif game.ReplicatedStorage:FindFirstChild(_G.SelectBoss) then
+                    local bossPosition = game.ReplicatedStorage:FindFirstChild(_G.SelectBoss).HumanoidRootPart.CFrame.Position
+                    local playerPosition = game.Players.LocalPlayer.Character.HumanoidRootPart.Position
+
+                    if (bossPosition - playerPosition).magnitude <= 1500 then
+                        topos(game.ReplicatedStorage:FindFirstChild(_G.SelectBoss).HumanoidRootPart.CFrame)
                     else
-                        if game:GetService("ReplicatedStorage"):FindFirstChild(_G.SelectBoss) then
-                            topos(game:GetService("ReplicatedStorage"):FindFirstChild(_G.SelectBoss).HumanoidRootPart.CFrame * CFrame.new(5,10,7))
-                        end
+                        BTP(game.ReplicatedStorage:FindFirstChild(_G.SelectBoss).HumanoidRootPart.CFrame)
                     end
-                end)
-            end
+                end
+            end)
         end
-    end)
+    end
+end)
+
+spawn(function()
+    while wait() do
+        if _G.AutoFarmBoss and not BypassTP then
+            pcall(function()
+                local selectedBoss = game:GetService("Workspace").Enemies:FindFirstChild(_G.SelectBoss) or game.ReplicatedStorage:FindFirstChild(_G.SelectBoss)
+
+                if selectedBoss then
+                    if selectedBoss:FindFirstChild("Humanoid") and selectedBoss:FindFirstChild("HumanoidRootPart") and selectedBoss.Humanoid.Health > 0 then
+                        repeat task.wait()
+                            AutoHaki()
+                            EquipWeapon(_G.SelectWeapon)
+                            selectedBoss.HumanoidRootPart.CanCollide = false
+                            selectedBoss.Humanoid.WalkSpeed = 0
+                            selectedBoss.HumanoidRootPart.Size = Vector3.new(80,80,80)                             
+                            topos(selectedBoss.HumanoidRootPart.CFrame * Farm_pos)
+                            game:GetService("VirtualUser"):CaptureController()
+                            game:GetService("VirtualUser"):Button1Down(Vector2.new(1280,672))
+                            sethiddenproperty(game:GetService("Players").LocalPlayer,"SimulationRadius",math.huge)
+                        until not _G.AutoFarmBoss or not selectedBoss.Parent or selectedBoss.Humanoid.Health <= 0
+                    end
+                else
+                    if game:GetService("ReplicatedStorage"):FindFirstChild(_G.SelectBoss) then
+                        topos(game:GetService("ReplicatedStorage"):FindFirstChild(_G.SelectBoss).HumanoidRootPart.CFrame * CFrame.new(5,10,7))
+                    end
+                end
+            end)
+        end
+    end
+end)
     
     Main:Toggle("Auto Farm All Boss",_G.AutoAllBoss,function(value)
         _G.AutoAllBoss = value
