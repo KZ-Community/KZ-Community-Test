@@ -2881,27 +2881,20 @@ function TP1(Pos)
     end
     
 --Tween Boats 
-function TPB(CFgo, speedFactor)
-    local tween_s = game:service"TweenService"
-    
-    -- Calculate duration based on the speed factor
-    local duration = (game:GetService("Workspace").Boats.PirateBrigade.VehicleSeat.CFrame.Position - CFgo.Position).Magnitude / (300 * speedFactor)
-    
-    local info = TweenInfo.new(duration, Enum.EasingStyle.Linear)
-    local tween = tween_s:Create(game:GetService("Workspace").Boats.PirateBrigade.VehicleSeat, info, {CFrame = CFgo})
-    tween:Play()
+function TPB(CFgo)
+	local tween_s = game:service"TweenService"
+	local info = TweenInfo.new((game:GetService("Workspace").Boats.PirateBrigade.VehicleSeat.CFrame.Position - CFgo.Position).Magnitude/300, Enum.EasingStyle.Linear)
+	tween = tween_s:Create(game:GetService("Workspace").Boats.PirateBrigade.VehicleSeat, info, {CFrame = CFgo})
+	tween:Play()
 
-    local tweenfunc = {}
+	local tweenfunc = {}
 
-    function tweenfunc:Stop()
-        tween:Cancel()
-    end
+	function tweenfunc:Stop()
+		tween:Cancel()
+	end
 
-    return tweenfunc
+	return tweenfunc
 end
-
-local speedFactor = 15 -- Adjust this value to control the speed
-TPB(targetCFrame, speedFactor)
 
 
 function TPP(CFgo)
