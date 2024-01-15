@@ -2474,6 +2474,48 @@ local function round(n)
 end
 Number = math.random(1, 1000000)
 
+function UpdateIslandKitsuneESP() 
+    for i,v in pairs(game:GetService("Workspace")["_WorldOrigin"].Locations:GetChildren()) do
+        pcall(function()
+            if KitsuneIslandESP then 
+                if v.Name == "KitsuneIsland" then
+                    if not v:FindFirstChild('NameEsp') then
+                        local bill = Instance.new('BillboardGui',v)
+                        bill.Name = 'NameEsp'
+                        bill.ExtentsOffset = Vector3.new(0, 1, 0)
+                        bill.Size = UDim2.new(1,200,1,30)
+                        bill.Adornee = v
+                        bill.AlwaysOnTop = true
+                        local name = Instance.new('TextLabel',bill)
+                        name.Font = "Code"
+                        name.FontSize = "Size14"
+                        name.TextWrapped = true
+                        name.Size = UDim2.new(1,0,1,0)
+                        name.TextYAlignment = 'Top'
+                        name.BackgroundTransparency = 1
+                        name.TextStrokeTransparency = 0.5
+                        name.TextColor3 = Color3.fromRGB(255, 255, 255)
+                    else
+                        v['NameEsp'].TextLabel.Text = (v.Name ..'   \n'.. round((game:GetService('Players').LocalPlayer.Character.Head.Position - v.Position).Magnitude/3) ..' M')
+                    end
+                end
+            else
+                if v:FindFirstChild('NameEsp') then
+                    v:FindFirstChild('NameEsp'):Destroy()
+                end
+            end
+        end)
+    end
+end
+
+function isnil(thing)
+    return (thing == nil)
+end
+local function round(n)
+    return math.floor(tonumber(n) + 0.5)
+end
+Number = math.random(1, 1000000)
+
 function UpdateAfdESP() 
     for i,v in pairs(game:GetService("Workspace").NPCs:GetChildren()) do
         pcall(function()
@@ -9190,9 +9232,9 @@ end)
     pcall(function()
         while wait() do
             if game.Workspace._WorldOrigin.Locations:FindFirstChild('Frozen Dimension') then
-                FrozenIsland:Set('🟢: Frozen Dimension Spawning')
+                FrozenIsland:Set('✅ : Frozen Dimension Spawning')
             else
-                FrozenIsland:Set('🔴: Frozen Dimension Not Found')
+                FrozenIsland:Set('❌ : Frozen Dimension Not Found')
             end
         end
     end)
@@ -9220,23 +9262,63 @@ FrozenIsland = M:Label("")
         
     M:Seperator("Kitsunen Events🦊🌠")
     
-    M:Toggle("Auto Kitsunen Island",_G.AutoFKitsune,function(value)
+         spawn(function()
+    pcall(function()
+        while wait() do
+            if game.Workspace._WorldOrigin.Locations:FindFirstChild('KitsuneIsland') then
+                KitsuneIsland:Set('✅ : Kitsunen  Spawning')
+            else
+                KitsuneIsland:Set('❌ : Kitsunen Not Found')
+            end
+        end
+    end)
+end)
+
+KitsuneIsland = M:Label("")
+    
+    M:Toggle("Auto Kitsune Island 🦊", false, function(value)
     _G.AutoFKitsune = value
-    StopTween(_G.AutoFKitsune)
-    end)   
-        
-        
-        spawn(function()
+    if _G.AutoFKitsune then
+        task.spawn(function()
             while wait() do
-                if _G.AutoFKitsune then
-                    pcall(function()
-                        if game.Workspace._WorldOrigin.Locations:FindFirstChild('Kitsune Island') then
-                            topos(game.Workspace._WorldOrigin.Locations:FindFirstChild('Kitsune Island').HumanoidRootPart.CFrame * CFrame.new(0,100,0))
-                        end
-                    end)
+                pcall(UpdateIslandKitsuneESP)
+                if not _G.AutoFKitsune or not KitsuneIslandESP then
+                    break
                 end
             end
         end)
+
+        task.spawn(function()
+            while wait() do
+                if not _G.AutoFKitsune then
+                    break
+                end
+                pcall(function()
+                    local kitsuneIsland = workspace.Map:FindFirstChild("KitsuneIsland")
+                    local emberTemplate = workspace:FindFirstChild("EmberTemplate")
+                    if kitsuneIsland and emberTemplate then
+                        for _, v in pairs(workspace:GetChildren()) do
+                            if v.Name == "EmberTemplate" then
+                                repeat wait()
+                                    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.Part.CFrame
+                                until not _G.AutoFKitsune or not v.Parent or (v.Part.CFrame.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude <= 1
+                            end
+                        end
+                    else
+                        if not emberTemplate then
+                            for _, v2 in pairs(kitsuneIsland:GetChildren()) do
+                                if v2:IsA("Part") then
+                                    topos(v2.CFrame * CFrame.new(500, 0, 0))
+                                    break
+                                end
+                            end
+                        end
+                    end
+                end)
+            end
+        end)
+    end
+end)
         
     M:Seperator("Misc Elite")
     
