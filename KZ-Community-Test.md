@@ -3218,11 +3218,11 @@ spawn(function()
         if _G.BringMode then
             pcall(function()
                 if _G.BringMode == "Low" then
-                    _G.BringMode = 250
+                    _G.BringMode = 100
                 elseif _G.BringMode == "Normal" then
-                    _G.BringMode = 300
+                    _G.BringMode = 200
                 elseif _G.BringMode == "Super Bring" then
-                    _G.BringMode = 400
+                    _G.BringMode = 300
                 end
             end)
         end
@@ -3251,37 +3251,37 @@ end)
     end)      
     
 local CameraShaker = require(game.ReplicatedStorage.Util.CameraShaker)
-CombatFrameworkR = require(game:GetService("Players").LocalPlayer.PlayerScripts.CombatFramework)
-y = debug.getupvalues(CombatFrameworkR)[2]
+local CombatFrameworkR = require(game.Players.LocalPlayer.PlayerScripts.CombatFramework)
+local activeController = debug.getupvalues(CombatFrameworkR)[2].activeController
+
 spawn(function()
     game:GetService("RunService").RenderStepped:Connect(function()
         if _G.FastAttack then
-            if typeof(y) == "table" then
-                pcall(function()
-                    CameraShaker:Stop()
-                    y.activeController.timeToNextAttack = (math.huge^math.huge^math.huge)
-                    y.activeController.timeToNextAttack = 0
-                    y.activeController.hitboxMagnitude = 50
-                    y.activeController.active = false
-                    y.activeController.timeToNextBlock = 0
-                    y.activeController.focusStart = 1655503339.0980349
-                    y.activeController.increment = 1
-                    y.activeController.blocking = false
-                    y.activeController.attacking = false
-                    y.activeController.humanoid.AutoRotate = true
-                end)
-            end
+            pcall(function()
+                CameraShaker:Stop()
+                activeController.timeToNextAttack = 0
+                activeController.hitboxMagnitude = 50
+                activeController.active = false
+                activeController.timeToNextBlock = 0
+                activeController.focusStart = 1655503339.0980349
+                activeController.increment = 1
+                activeController.blocking = false
+                activeController.attacking = false
+                activeController.humanoid.AutoRotate = true
+            end)
         end
     end)
 end)
+
 spawn(function()
     game:GetService("RunService").RenderStepped:Connect(function()
         if _G.FastAttack or _G.FastAttackCambodiakak == true then
             game.Players.LocalPlayer.Character.Stun.Value = 0
-            game.Players.LocalPlayer.Character.Busy.Value = false        
+            game.Players.LocalPlayer.Character.Busy.Value = false
         end
     end)
 end)
+
     local CamShake = require(game.ReplicatedStorage.Util.CameraShaker)
     CamShake:Stop()
     local Client = game.Players.LocalPlayer
@@ -3346,34 +3346,46 @@ spawn(function()
     end
 end)
 
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+
 function GetBladeHit()
-    local CombatFrameworkLib = debug.getupvalues(require(game:GetService("Players").LocalPlayer.PlayerScripts.CombatFramework))
+    local CombatFrameworkLib = debug.getupvalues(require(Players.LocalPlayer.PlayerScripts.CombatFramework))
     local CmrFwLib = CombatFrameworkLib[2]
     local p13 = CmrFwLib.activeController
     local weapon = p13.blades[1]
+
     if not weapon then 
         return weapon
     end
-    while weapon.Parent ~= game.Players.LocalPlayer.Character do
+
+    while weapon.Parent ~= Players.LocalPlayer.Character do
         weapon = weapon.Parent 
     end
+
     return weapon
 end
+
 function AttackHit()
-    local CombatFrameworkLib = debug.getupvalues(require(game:GetService("Players").LocalPlayer.PlayerScripts.CombatFramework))
+    local CombatFrameworkLib = debug.getupvalues(require(Players.LocalPlayer.PlayerScripts.CombatFramework))
     local CmrFwLib = CombatFrameworkLib[2]
-    local plr = game.Players.LocalPlayer
+    local plr = Players.LocalPlayer
+
     for i = 1, 1 do
-        local bladehit = require(game.ReplicatedStorage.CombatFramework.RigLib).getBladeHits(plr.Character,{plr.Character.HumanoidRootPart},60)
+        local bladehit = require(ReplicatedStorage.CombatFramework.RigLib).getBladeHits(plr.Character, {plr.Character.HumanoidRootPart}, 60)
         local cac = {}
         local hash = {}
+
         for k, v in pairs(bladehit) do
             if v.Parent:FindFirstChild("HumanoidRootPart") and not hash[v.Parent] then
                 table.insert(cac, v.Parent.HumanoidRootPart)
                 hash[v.Parent] = true
             end
         end
+
         bladehit = cac
+
         if #bladehit > 0 then
             pcall(function()
                 CmrFwLib.activeController.timeToNextAttack = 1
@@ -3383,19 +3395,19 @@ function AttackHit()
                 CmrFwLib.activeController.increment = 3
                 CmrFwLib.activeController.hitboxMagnitude = 60
                 CmrFwLib.activeController.focusStart = 0
-                game:GetService("ReplicatedStorage").RigControllerEvent:FireServer("weaponChange",tostring(GetBladeHit()))
-                game:GetService("ReplicatedStorage").RigControllerEvent:FireServer("hit", bladehit, i, "")
+
+                ReplicatedStorage.RigControllerEvent:FireServer("weaponChange", tostring(GetBladeHit()))
+                ReplicatedStorage.RigControllerEvent:FireServer("hit", bladehit, i, "")
             end)
         end
     end
 end
+
 spawn(function()
-    while wait(.1) do
+    while wait(FastAttackDelay) do
         if _G.FastAttack then
             pcall(function()
-                repeat task.wait(_G.FastAttackDelay)
-                    AttackHit()
-                until not _G.FastAttack
+                AttackHit()
             end)
         end
     end
