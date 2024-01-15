@@ -14000,6 +14000,10 @@ end)
     S:Button("Buy God Human [ $5,000 Fragments $5,000,000 Beli ]",function()
         game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("BuyGodhuman")
     end)
+
+    S:Button("Buy Sanguine Art [ $5,000 Fragments $5,000,000 Beli ]",function()
+        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("BuySanguineArt")
+    end)
     -----Shop----------------
     
     S:Seperator(" Sword ")
