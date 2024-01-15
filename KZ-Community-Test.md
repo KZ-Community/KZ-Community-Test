@@ -2477,7 +2477,7 @@ Number = math.random(1, 1000000)
 function UpdateIslandKitsuneESP() 
     for i,v in pairs(game:GetService("Workspace")["_WorldOrigin"].Locations:GetChildren()) do
         pcall(function()
-            if KitsuneIslandESP then 
+            if _G.AutoFKitsune then 
                 if v.Name == "KitsuneIsland" then
                     if not v:FindFirstChild('NameEsp') then
                         local bill = Instance.new('BillboardGui',v)
@@ -9285,49 +9285,51 @@ KitsuneIsland = M:Label("")
     
     M:Toggle("Auto Kitsune Island 🦊", false, function(value)
     _G.AutoFKitsune = value
-    if _G.AutoFKitsune then
-        task.spawn(function()
-            while wait() do
-                pcall(UpdateIslandKitsuneESP)
-                if not _G.AutoFKitsune or not KitsuneIslandESP then
-                    StopTween(_G.AutoFKitsune)
-                    break
-                end
-            end
-        end)
+    if not _G.AutoFKitsune then
+        StopTween()
+    end
+end)
 
-        task.spawn(function()
-            while wait() do
-                if not _G.AutoFKitsune then
-                    break
+task.spawn(function()
+    while wait() do
+        if not _G.AutoFKitsune then
+            break
+        end
+        pcall(function()
+            local kitsuneIsland = workspace.Map:FindFirstChild("KitsuneIsland")
+            local emberTemplate = workspace:FindFirstChild("EmberTemplate")
+            if kitsuneIsland and emberTemplate then
+                for _, v in pairs(workspace:GetChildren()) do
+                    if v.Name == "EmberTemplate" then
+                        repeat wait()
+                            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.Part.CFrame
+                        until not _G.AutoFKitsune or not v.Parent or (v.Part.CFrame.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude <= 1
+                    end
                 end
-                pcall(function()
-                    local kitsuneIsland = workspace.Map:FindFirstChild("KitsuneIsland")
-                    local emberTemplate = workspace:FindFirstChild("EmberTemplate")
-                    if kitsuneIsland and emberTemplate then
-                        for _, v in pairs(workspace:GetChildren()) do
-                            if v.Name == "EmberTemplate" then
-                                repeat wait()
-                                    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.Part.CFrame
-                                until not _G.AutoFKitsune or not v.Parent or (v.Part.CFrame.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude <= 1
-                            end
-                        end
-                    else
-                        if not emberTemplate then
-                            for _, v2 in pairs(kitsuneIsland:GetChildren()) do
-                                if v2:IsA("Part") then
-                                    topos(v2.CFrame * CFrame.new(500, 0, 0))
-                                    break
-                                end
-                            end
+            else
+                if not emberTemplate then
+                    for _, v2 in pairs(kitsuneIsland:GetChildren()) do
+                        if v2:IsA("Part") then
+                            topos(v2.CFrame * CFrame.new(500, 0, 0))
+                            break
                         end
                     end
-                end)
+                end
             end
         end)
     end
 end)
-
+        
+task.spawn(function()
+    while wait() do
+        pcall(function()
+            if _G.AutoFKitsune then
+                UpdateIslandKitsuneESP() 
+            end
+        end)
+    end
+end)
+   
         
     M:Seperator("Misc Elite")
     
