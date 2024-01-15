@@ -8862,12 +8862,13 @@ M:Toggle("Auto Tushita", _G.Autotushita,function(value)
     
     M:Seperator("Rough Sea")
     
-    M:Toggle("Auto Drive Boat", _G.DomadicAutoDriveBoat,function(value)
-         _G.DomadicAutoDriveBoat = value
-        StopTween( _G.DomadicAutoDriveBoat)
-    end)
-    
-local pirateBrigade = game:Gspawn(function()
+    M:Toggle("Auto Drive Boat", _G.DomadicAutoDriveBoat, function(value)
+    _G.DomadicAutoDriveBoat = value
+    _G.tpboat = value
+    StopTween(_G.DomadicAutoDriveBoat)
+end)
+
+spawn(function()
     while wait() do
         pcall(function()
             if _G.DomadicAutoDriveBoat then
