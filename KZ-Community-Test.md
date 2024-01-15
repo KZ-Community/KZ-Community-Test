@@ -8881,6 +8881,7 @@ M:Toggle("Auto Tushita", _G.Autotushita,function(value)
     
     M:Toggle("Auto Drive Boat", _G.DomadicAutoDriveBoat, function(value)
     _G.DomadicAutoDriveBoat = value
+    _G.tpboat = value
     StopTween(_G.DomadicAutoDriveBoat)
 end)
 
@@ -8890,7 +8891,6 @@ spawn(function()
                 if _G.DomadicAutoDriveBoat then
                     if not game:GetService("Workspace").Enemies:FindFirstChild("Shark") or not game:GetService("Workspace").Enemies:FindFirstChild("Terrorshark") or not game:GetService("Workspace").Enemies:FindFirstChild("Piranha") or not game:GetService("Workspace").Enemies:FindFirstChild("Fish Crew Member") then
                         if not game:GetService("Workspace").Boats:FindFirstChild("PirateBrigade") then
-                        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("requestEntrance", Vector3.new(-5079.44677734375, 313.7293395996094, -3151.065185546875))
                             buyb = TPP(CFrame.new(-6123.90088, 16.4465275, -2249.2832, -0.54705143, 1.08052314e-08, 0.837098956, 2.53016292e-08, 1, 3.62688457e-09, -0.837098956, 2.31640609e-08, -0.54705143))
                             if (CFrame.new(-6123.90088, 16.4465275, -2249.2832, -0.54705143, 1.08052314e-08, 0.837098956, 2.53016292e-08, 1, 3.62688457e-09, -0.837098956, 2.31640609e-08, -0.54705143).Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).magnitude <= 10 then
                                 if buyb then buyb:Stop() end
@@ -8937,6 +8937,21 @@ spawn(function()
 			end
 		end)
 	end)
+
+spawn(function()
+    pcall(function()
+        while wait(2) do
+            if _G.tpboat then
+                if not game:GetService("Workspace").Boats:FindFirstChild("PirateBrigade") then
+                    _G.DomadicAutoDriveBoat = false
+                    game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("requestEntrance", Vector3.new(-5079.44677734375, 313.7293395996094, -3151.065185546875))
+                    _G.DomadicAutoDriveBoat = true
+                    repeat wait() until game:GetService("Workspace").Boats:FindFirstChild("PirateBrigade") or not _G.tpboat
+                end
+            end
+        end
+    end)
+end)
 
     M:Toggle("Auto Farm Terrorshark", _G.AutoTerrorshark,function(value)
          _G.AutoTerrorshark = value
