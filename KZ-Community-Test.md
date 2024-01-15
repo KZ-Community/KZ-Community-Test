@@ -3286,40 +3286,11 @@ spawn(function()
         end
     end
 end)
-
-  coroutine.wrap(function()
-	while task.wait(.1) do
-		local ac = CombatFrameworkR.activeController
-		if ac and ac.equipped then
-			if FastAttack and _G.FastAttack then
-				AttackFunction()
-				if _G.DeleyFast == "Normal" then
-					if tick() - cooldownfastattack > .9 then wait(.1) cooldownfastattack = tick() end
-				elseif _G.DeleyFast == "Fast" then
-					if tick() - cooldownfastattack > 1.5 then wait(.01) cooldownfastattack = tick() end
-				elseif _G.DeleyFast == "Smoot" then
-					if tick() - cooldownfastattack > .3 then wait(.7) cooldownfastattack = tick() end
-				end
-			elseif FastAttack and _G.FastAttack == false then
-				if ac.hitboxMagnitude ~= 50 then
-					ac.hitboxMagnitude = 50
-				end
-				ac:attack()
-			end
-		end
-	end
-end)()
   
     Setting:Toggle("Fast Attack",true,function(value)
         _G.FastAttack = value
     end)      
     
-local Attack = {"Normal", "Smoot", "Fast"}
-_G.DeleyFast = Normal
-Setting:Dropdown("Attack Deley", Attack,function(value)
-    _G.DeleyFast = value
-end)
-
 local CameraShaker = require(game.ReplicatedStorage.Util.CameraShaker)
 CombatFrameworkR = require(game:GetService("Players").LocalPlayer.PlayerScripts.CombatFramework)
 y = debug.getupvalues(CombatFrameworkR)[2]
@@ -3331,7 +3302,7 @@ spawn(function()
                     CameraShaker:Stop()
                     y.activeController.timeToNextAttack = (math.huge^math.huge^math.huge)
                     y.activeController.timeToNextAttack = 0
-                    y.activeController.hitboxMagnitude = 50
+                    y.activeController.hitboxMagnitude = 60
                     y.activeController.active = false
                     y.activeController.timeToNextBlock = 0
                     y.activeController.focusStart = 1655503339.0980349
@@ -3381,6 +3352,42 @@ end)
         end
     end)
 
+local AttackList = {"0", "0.1", "0.15", "0.155", "0.16", "0.165", "0.17", "0.175", "0.18", "0.185"}
+_G.FastAttackDelay = "0.175"
+Setting:Dropdown("Fast Attack Delay (Default)", AttackList,function(MakoGay)
+    _G.FastAttackDelay = MakoGay
+end)
+
+spawn(function()
+    while wait(.1) do
+        if _G.FastAttackDelay then
+            pcall(function()
+                if _G.FastAttackDelay == "0" then
+                    _G.FastAttackDelay = 0
+                elseif _G.FastAttackDelay == "0.1" then
+                    _G.FastAttackDelay = 0.1
+                elseif _G.FastAttackDelay == "0.15" then
+                    _G.FastAttackDelay = 0.15
+                elseif _G.FastAttackDelay == "0.155" then
+                    _G.FastAttackDelay = 0.155
+                elseif _G.FastAttackDelay == "0.16" then
+                    _G.FastAttackDelay = 0.16
+                elseif _G.FastAttackDelay == "0.165" then
+                    _G.FastAttackDelay = 0.165
+                elseif _G.FastAttackDelay == "0.17" then
+                    _G.FastAttackDelay = 0.17
+                elseif _G.FastAttackDelay == "0.175" then
+                    _G.FastAttackDelay = 0.175
+                elseif _G.FastAttackDelay == "0.18" then
+                    _G.FastAttackDelay = 0.18
+                elseif _G.FastAttackDelay == "0.185" then
+                    _G.FastAttackDelay = 0.185
+                end
+            end)
+        end
+    end
+end)
+
 function GetBladeHit()
     local CombatFrameworkLib = debug.getupvalues(require(game:GetService("Players").LocalPlayer.PlayerScripts.CombatFramework))
     local CmrFwLib = CombatFrameworkLib[2]
@@ -3415,8 +3422,8 @@ function AttackHit()
                 CmrFwLib.activeController.attacking = false
                 CmrFwLib.activeController.blocking = false
                 CmrFwLib.activeController.timeToNextBlock = 0
-                CmrFwLib.activeController.increment = 1
-                CmrFwLib.activeController.hitboxMagnitude = 50
+                CmrFwLib.activeController.increment = 3
+                CmrFwLib.activeController.hitboxMagnitude = 60
                 CmrFwLib.activeController.focusStart = 0
                 game:GetService("ReplicatedStorage").RigControllerEvent:FireServer("weaponChange",tostring(GetBladeHit()))
                 game:GetService("ReplicatedStorage").RigControllerEvent:FireServer("hit", bladehit, i, "")
@@ -3435,7 +3442,7 @@ spawn(function()
         end
     end
 end)
-      
+
 Setting:Toggle("Auto Click",false,function(value)
 _G.AutoClick = value
 end)
@@ -9260,7 +9267,7 @@ FrozenIsland = M:Label("")
             end
         end)
         
-    M:Seperator("Kitsunen Events🦊🌠")
+    M:Seperator("Kitsunen Events 🦊")
     
          spawn(function()
     pcall(function()
@@ -9283,6 +9290,7 @@ KitsuneIsland = M:Label("")
             while wait() do
                 pcall(UpdateIslandKitsuneESP)
                 if not _G.AutoFKitsune or not KitsuneIslandESP then
+                    StopTween(_G.AutoFKitsune)
                     break
                 end
             end
@@ -9319,6 +9327,7 @@ KitsuneIsland = M:Label("")
         end)
     end
 end)
+
         
     M:Seperator("Misc Elite")
     
@@ -11729,12 +11738,8 @@ end
 
 if World3 then
     RaceV4:Seperator("Race V4")
-    
-    RaceV4:Button("Test CFarm",function()
-  topos(CFrame.new(-17013.80078125, 10.962434768676758, 438.0169982910156))
-    end)
-    
-        local FM = RaceV4:Label('Third World')
+
+    local FM = RaceV4:Label('Third World')
     
     task.spawn(function()
             while task.wait() do
