@@ -8867,14 +8867,12 @@ M:Toggle("Auto Tushita", _G.Autotushita,function(value)
         StopTween( _G.DomadicAutoDriveBoat)
     end)
     
-local pirateBrigade = game:GetService("Workspace").Boats:FindFirstChild("PirateBrigade")
-
-spawn(function()
+local pirateBrigade = game:Gspawn(function()
     while wait() do
         pcall(function()
             if _G.DomadicAutoDriveBoat then
                 if not game:GetService("Workspace").Enemies:FindFirstChild("Shark") or not game:GetService("Workspace").Enemies:FindFirstChild("Terrorshark") or not game:GetService("Workspace").Enemies:FindFirstChild("Piranha") or not game:GetService("Workspace").Enemies:FindFirstChild("Fish Crew Member") then
-                    if not pirateBrigade then
+                    if not game:GetService("Workspace").Boats:FindFirstChild("PirateBrigade") then
                         buyb = TPP(CFrame.new(-6123.90088, 16.4465275, -2249.2832, -0.54705143, 1.08052314e-08, 0.837098956, 2.53016292e-08, 1, 3.62688457e-09, -0.837098956, 2.31640609e-08, -0.54705143))
                         if (CFrame.new(-6123.90088, 16.4465275, -2249.2832, -0.54705143, 1.08052314e-08, 0.837098956, 2.53016292e-08, 1, 3.62688457e-09, -0.837098956, 2.31640609e-08, -0.54705143).Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).magnitude <= 10 then
                             if buyb then buyb:Stop() end
@@ -8885,7 +8883,7 @@ spawn(function()
 
                             game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
                         end
-                    elseif pirateBrigade then
+                    elseif game:GetService("Workspace").Boats:FindFirstChild("PirateBrigade") then
                         if game.Players.LocalPlayer.Character:WaitForChild("Humanoid").Sit == false then
                             TPP(pirateBrigade.VehicleSeat.CFrame * CFrame.new(0,1,0))
                         else
@@ -8921,10 +8919,11 @@ end)
 -- ส่วนที่เพิ่ม
 spawn(function()
     pcall(function()
-        while wait(5) do -- ปรับระยะเวลาเป็น 1 วินาที
-            if _G.DomadicAutoDriveBoat then
-                if not pirateBrigade then
+        while wait(15) do -- ปรับระยะเวลาเป็น 1 วินาที
+            if _G.tpboat then
+                if not game:GetService("Workspace").Boats:FindFirstChild("PirateBrigade") then
                     game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("requestEntrance", Vector3.new(-5079.44677734375, 313.7293395996094, -3151.065185546875))
+                    _G.tpboat = false
                 end
             end
         end
