@@ -11691,6 +11691,10 @@ end
 
 if World3 then
     RaceV4:Seperator("Race V4")
+
+RaceV4:Button("Test CFarm",function()
+  topos(CFrame.new(-17013.80078125, 10.962434768676758, 438.0169982910156))
+    end)
     
         local FM = RaceV4:Label('Third World')
     
