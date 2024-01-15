@@ -8903,7 +8903,7 @@ spawn(function()
                                 for i,v in pairs(game:GetService("Workspace").Boats:GetChildren()) do
                                     if v.Name == "PirateBrigade" then
                                         repeat wait()
-                                            if (CFrame.new(-17013.80078125, 10.962434768676758, 438.0169982910156).Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).magnitude <= 10 then
+                                            if (CFrame.new(73c9c4d5-7ee8-4093-b527-1455b35cd066).Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).magnitude <= 10 then
                                                 TPB(CFrame.new(-33163.1875, 10.964323997497559, -324.4842224121094))
                                             elseif (CFrame.new(-33163.1875, 10.964323997497559, -324.4842224121094).Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).magnitude <= 10 then
                                                 TPB(CFrame.new(-37952.49609375, 10.96342945098877, -1324.12109375))
