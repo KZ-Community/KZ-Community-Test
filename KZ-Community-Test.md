@@ -3218,11 +3218,11 @@ spawn(function()
         if _G.BringMode then
             pcall(function()
                 if _G.BringMode == "Low" then
-                    _G.BringMode = 100
+                    _G.BringMode = 250
                 elseif _G.BringMode == "Normal" then
-                    _G.BringMode = 200
-                elseif _G.BringMode == "Super Bring" then
                     _G.BringMode = 300
+                elseif _G.BringMode == "Super Bring" then
+                    _G.BringMode = 400
                 end
             end)
         end
