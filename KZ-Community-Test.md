@@ -8894,6 +8894,7 @@ spawn(function()
                         or not game:GetService("Workspace").Enemies:FindFirstChild("Terrorshark")
                         or not game:GetService("Workspace").Enemies:FindFirstChild("Piranha")
                         or not game:GetService("Workspace").Enemies:FindFirstChild("Fish Crew Member") then
+                        wait(.2)
                     if not game:GetService("Workspace").Boats:FindFirstChild("PirateBrigade") then
                         local buyb = TPP(CFrame.new(-6123.90088, 16.4465275, -2249.2832, -0.54705143, 1.08052314e-08, 0.837098956, 2.53016292e-08, 1, 3.62688457e-09, -0.837098956, 2.31640609e-08, -0.54705143))
                         if (CFrame.new(-6123.90088, 16.4465275, -2249.2832, -0.54705143, 1.08052314e-08, 0.837098956, 2.53016292e-08, 1, 3.62688457e-09, -0.837098956, 2.31640609e-08, -0.54705143).Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).magnitude <= 10 then
@@ -8950,20 +8951,17 @@ spawn(function()
         while wait() do
             if _G.tpboat then
                 if not game:GetService("Workspace").Boats:FindFirstChild("PirateBrigade") then
-                    _G.DomadicAutoDriveBoat = false
                     wait(.1)
 		game.Players.localPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-5074.45556640625, 314.5155334472656, -2991.054443359375)
 		game:GetService("Players").LocalPlayer.Character.LowerTorso:Destroy()
 		game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("SetSpawnPoint")
                     _G.tpboat = false
-                    _G.DomadicAutoDriveBoat = true
                     repeat wait() until not _G.tpboat or game:GetService("Workspace").Boats:FindFirstChild("PirateBrigade")
                 end
             end
         end
     end)
 end)
-
     M:Toggle("Auto Farm Terrorshark", _G.AutoTerrorshark,function(value)
          _G.AutoTerrorshark = value
         StopTween( _G.AutoTerrorshark)
