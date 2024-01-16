@@ -3287,7 +3287,7 @@ spawn(function()
     end
 end)
   
-    Setting:Toggle("Fast Attack",true,function(value)
+    Setting:Toggle("Fast Attack",false,function(value)
         _G.FastAttack = value
     end)      
     
@@ -3438,6 +3438,101 @@ spawn(function()
                 repeat task.wait(_G.FastAttackDelay)
                     AttackHit()
                 until not _G.FastAttack
+            end)
+        end
+    end
+end)
+
+Setting:Toggle("Fast Attack Test",true,function(value)
+        _G.FastAttack2 = value
+    end)
+
+local player = game.Players.LocalPlayer
+local combatFramework = debug.getupvalues(require(player.PlayerScripts.CombatFramework))[2]
+local activeController = combatFramework.activeController
+
+function getCurrentBlade()
+    local p13 = activeController
+    local ret = p13.blades[1]
+    while ret and ret.Parent ~= player.Character do
+        ret = ret.Parent
+    end
+    return ret
+end
+
+local cameraShaker = require(game.ReplicatedStorage.Util.CameraShaker)
+
+spawn(function()
+    while true do
+        if _G.FastAttack2 then
+            pcall(function()
+                cameraShaker:Stop()
+                activeController.attacking = false
+                activeController.timeToNextAttack = 0
+                activeController.increment = 3
+                activeController.hitboxMagnitude = 50
+                activeController.blocking = false
+                activeController.timeToNextBlock = 0
+                activeController.focusStart = 0
+                activeController.humanoid.AutoRotate = true
+            end)
+        end
+        wait()
+    end
+end)
+
+function getAllBladeHits(sizes)
+    local hits = {}
+    local client = player
+    local enemies = game:GetService("Workspace").Enemies:GetChildren()
+    for i = 1, #enemies do
+        local v = enemies[i]
+        local humanoid = v:FindFirstChildOfClass("Humanoid")
+        if humanoid and humanoid.RootPart and humanoid.Health > 0 and client:DistanceFromCharacter(humanoid.RootPart.Position) < sizes + 5 then
+            table.insert(hits, humanoid.RootPart)
+        end
+    end
+    return hits
+end
+
+function attackNoCD()
+    local ac = activeController
+    for i = 1, 1 do
+        local bladeHit = getAllBladeHits(55)
+        if #bladeHit > 0 then
+            local a8, a9, a7, a10 = debug.getupvalue(ac.attack, 5, 6, 4, 7)
+            local as12 = (a8 * 798405 + a7 * 727595) % a9
+            local as13 = a7 * 798405
+
+            as12 = (as12 * a9 + as13) % 1099511627776
+            a8, a7, a10 = math.floor(as12 / a9), as12 - a8 * a9, a10 + 1
+
+            debug.setupvalue(ac.attack, 5, a8)
+            debug.setupvalue(ac.attack, 4, a7)
+            debug.setupvalue(ac.attack, 7, a10)
+
+            pcall(function()
+                for _, v in pairs(ac.animator.anims.basic) do
+                    v:Play()
+                end
+            end)
+
+            if player.Character:FindFirstChildOfClass("Tool") and ac.blades and ac.blades[1] then
+                wait()
+                game:GetService("ReplicatedStorage").RigControllerEvent:FireServer("weaponChange", tostring(getCurrentBlade()))
+                game.ReplicatedStorage.Remotes.Validator:FireServer(math.floor(as12 / 1099511627776 * 16777215), a10)
+                game:GetService("ReplicatedStorage").RigControllerEvent:FireServer("hit", bladeHit, i, "")
+            end
+        end
+    end
+end
+
+spawn(function()
+    while wait(0.10) do
+        if _G.FastAttack2 then
+            pcall(function()
+                attackNoCD()
+                Stop()
             end)
         end
     end
