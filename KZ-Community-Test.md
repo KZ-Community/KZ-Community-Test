@@ -8882,9 +8882,9 @@ M:Toggle("Auto Tushita", _G.Autotushita,function(value)
     
     local point = Vector3.new(-5074.45556640625, 314.5155334472656, -2991.054443359375)
 
-M:Button("Bypass Drive Boat/n(Can be used in the event that the ship Pirate Brigade is lost.)", function()
+M:Button("Bypass Drive Boat (Just one Click!)", function()
     if not game:GetService("Workspace").Boats:FindFirstChild("PirateBrigade") then
-        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(point)
+    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(point)
         game.Players.LocalPlayer.Character.Humanoid:ChangeState(15)
         game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("SetSpawnPoint")
     end
