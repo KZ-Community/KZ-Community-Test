@@ -8898,6 +8898,7 @@ spawn(function()
                         StopTween = false
                         wait(2.1)
                         StopTween = true
+			_G.tpboat = false
                         local buyb = TPP(CFrame.new(-6123.90088, 16.4465275, -2249.2832, -0.54705143, 1.08052314e-08, 0.837098956, 2.53016292e-08, 1, 3.62688457e-09, -0.837098956, 2.31640609e-08, -0.54705143))
                         if (CFrame.new(-6123.90088, 16.4465275, -2249.2832, -0.54705143, 1.08052314e-08, 0.837098956, 2.53016292e-08, 1, 3.62688457e-09, -0.837098956, 2.31640609e-08, -0.54705143).Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).magnitude <= 10 then
                             if buyb then buyb:Stop() end
@@ -8908,6 +8909,7 @@ spawn(function()
                             game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
                         end
                     elseif game:GetService("Workspace").Boats:FindFirstChild("PirateBrigade") then
+		        _G.tpboat = false
                         if game.Players.LocalPlayer.Character:WaitForChild("Humanoid").Sit == false then
                             TPP(game:GetService("Workspace").Boats.PirateBrigade.VehicleSeat.CFrame * CFrame.new(0,1,0))
                         else
