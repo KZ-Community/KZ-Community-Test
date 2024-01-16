@@ -8893,8 +8893,9 @@ spawn(function()
                         or not game:GetService("Workspace").Enemies:FindFirstChild("Terrorshark")
                         or not game:GetService("Workspace").Enemies:FindFirstChild("Piranha")
                         or not game:GetService("Workspace").Enemies:FindFirstChild("Fish Crew Member") then
-			wait(3)
+			wait(6)
                         _G.tpboat = true
+			StopTween = true
                     if not game:GetService("Workspace").Boats:FindFirstChild("PirateBrigade") then
                         local buyb = TPP(CFrame.new(-6123.90088, 16.4465275, -2249.2832, -0.54705143, 1.08052314e-08, 0.837098956, 2.53016292e-08, 1, 3.62688457e-09, -0.837098956, 2.31640609e-08, -0.54705143))
                         if (CFrame.new(-6123.90088, 16.4465275, -2249.2832, -0.54705143, 1.08052314e-08, 0.837098956, 2.53016292e-08, 1, 3.62688457e-09, -0.837098956, 2.31640609e-08, -0.54705143).Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).magnitude <= 10 then
