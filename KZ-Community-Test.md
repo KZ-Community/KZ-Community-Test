@@ -8880,6 +8880,16 @@ M:Toggle("Auto Tushita", _G.Autotushita,function(value)
     
     M:Seperator("Rough Sea")
     
+    local point = Vector3.new(-5074.45556640625, 314.5155334472656, -2991.054443359375)
+
+M:Button("Bypass Drive Boat/n(Can be used in the event that the ship Pirate Brigade is lost.)", function()
+    if not game:GetService("Workspace").Boats:FindFirstChild("PirateBrigade") then
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(point)
+        game.Players.LocalPlayer.Character.Humanoid:ChangeState(15)
+        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("SetSpawnPoint")
+    end
+end)
+    
     M:Toggle("Auto Drive Boat", _G.DomadicAutoDriveBoat, function(value)
     _G.DomadicAutoDriveBoat = value
     StopTween(_G.DomadicAutoDriveBoat)
@@ -8893,12 +8903,7 @@ spawn(function()
                         and not game:GetService("Workspace").Enemies:FindFirstChild("Terrorshark")
                         and not game:GetService("Workspace").Enemies:FindFirstChild("Piranha")
                         and not game:GetService("Workspace").Enemies:FindFirstChild("Fish Crew Member") then
-                    _G.tpboat = true
                     if not game:GetService("Workspace").Boats:FindFirstChild("PirateBrigade") then
-                        StopTween = false
-                        wait(2.1)
-                        StopTween = true
-			_G.tpboat = false
                         local buyb = TPP(CFrame.new(-6123.90088, 16.4465275, -2249.2832, -0.54705143, 1.08052314e-08, 0.837098956, 2.53016292e-08, 1, 3.62688457e-09, -0.837098956, 2.31640609e-08, -0.54705143))
                         if (CFrame.new(-6123.90088, 16.4465275, -2249.2832, -0.54705143, 1.08052314e-08, 0.837098956, 2.53016292e-08, 1, 3.62688457e-09, -0.837098956, 2.31640609e-08, -0.54705143).Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).magnitude <= 10 then
                             if buyb then buyb:Stop() end
@@ -8909,7 +8914,6 @@ spawn(function()
                             game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
                         end
                     elseif game:GetService("Workspace").Boats:FindFirstChild("PirateBrigade") then
-		        _G.tpboat = false
                         if game.Players.LocalPlayer.Character:WaitForChild("Humanoid").Sit == false then
                             TPP(game:GetService("Workspace").Boats.PirateBrigade.VehicleSeat.CFrame * CFrame.new(0,1,0))
                         else
@@ -8950,25 +8954,23 @@ spawn(function()
     end)
 end)
 
-local point = Vector3.new(-5074.45556640625, 314.5155334472656, -2991.054443359375)
-
-spawn(function()
-    pcall(function()
-        while wait() do
-            if _G.tpboat then
-                if not game:GetService("Workspace").Boats:FindFirstChild("PirateBrigade") then
-                    StopTween = false
-                    wait(2)
-                    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(point)
-                    game.Players.LocalPlayer.Character.Humanoid:ChangeState(15)
-                    game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("SetSpawnPoint")
-                    _G.tpboat = false
-                    StopTween = true
-                end
-            end
-        end
-    end)
-end)
+---spawn(function()
+---    pcall(function()
+---        while wait() do
+---            if _G.tpboat then
+---                if not game:GetService("Workspace").Boats:FindFirstChild("PirateBrigade") then
+---                   StopTween = false
+---                    wait(2)
+---                    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(point)
+---                   game.Players.LocalPlayer.Character.Humanoid:ChangeState(15)
+---                    game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("SetSpawnPoint")
+---                    _G.tpboat = false
+---                    StopTween = true
+---                end
+---            end
+---        end
+---    end)
+---end)
 
 
     M:Toggle("Auto Farm Terrorshark", _G.AutoTerrorshark,function(value)
