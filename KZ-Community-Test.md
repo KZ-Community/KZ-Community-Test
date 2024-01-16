@@ -3292,48 +3292,38 @@ end)
     end)      
     
 local CameraShaker = require(game.ReplicatedStorage.Util.CameraShaker)
-local CombatFrameworkR = require(game.Players.LocalPlayer.PlayerScripts.CombatFramework)
-local activeController = debug.getupvalues(CombatFrameworkR)[2].activeController
-local STOPRL = require(game:GetService("ReplicatedStorage").CombatFramework.RigLib)
-local STOP = require(CombatFrameworkR.Particle)
-local CamShake = require(game.ReplicatedStorage.Util.CameraShaker)
-
--- Function to stop camera shaking and set attack parameters
-local function stopAttackEffects()
-    pcall(function()
-        CamShake:Stop()
-        activeController.timeToNextAttack = 0
-        activeController.hitboxMagnitude = 60
-        activeController.active = false
-        activeController.timeToNextBlock = 0
-        activeController.focusStart = 1655503339.0980349
-        activeController.increment = 1
-        activeController.blocking = false
-        activeController.attacking = false
-        activeController.humanoid.AutoRotate = true
-    end)
-end
-
--- Hook into RenderStepped for continuous checking
+CombatFrameworkR = require(game:GetService("Players").LocalPlayer.PlayerScripts.CombatFramework)
+y = debug.getupvalues(CombatFrameworkR)[2]
 spawn(function()
     game:GetService("RunService").RenderStepped:Connect(function()
         if _G.FastAttack then
-            if typeof(activeController) == "table" then
-                stopAttackEffects()
+            if typeof(y) == "table" then
+                pcall(function()
+                    CameraShaker:Stop()
+                    y.activeController.timeToNextAttack = (math.huge^math.huge^math.huge)
+                    y.activeController.timeToNextAttack = 0
+                    y.activeController.hitboxMagnitude = 60
+                    y.activeController.active = false
+                    y.activeController.timeToNextBlock = 0
+                    y.activeController.focusStart = 1655503339.0980349
+                    y.activeController.increment = 1
+                    y.activeController.blocking = false
+                    y.activeController.attacking = false
+                    y.activeController.humanoid.AutoRotate = true
+                end)
             end
         end
     end)
 end)
-
--- Function to handle character stun and busy state
 spawn(function()
     game:GetService("RunService").RenderStepped:Connect(function()
         if _G.FastAttack or _G.FastAttackCambodiakak == true then
             game.Players.LocalPlayer.Character.Stun.Value = 0
-            game.Players.LocalPlayer.Character.Busy.Value = false
+            game.Players.LocalPlayer.Character.Busy.Value = false        
         end
     end)
 end)
+    -- ... (previous code)
 
 -- Enhance Attack Animation
 spawn(function()
@@ -3352,9 +3342,9 @@ spawn(function()
                         STOP.play = function() end
                         a:Play(0.01, 0.01, 0.01)
                         func(Hits)
-                        STOP.play = shared.cpc
                         wait(a.length * 0.5)
                         a:Stop()
+                        STOP.play = shared.cpc  -- Restore the original function
                     else
                         a:Play()
                     end
@@ -3364,60 +3354,71 @@ spawn(function()
     end
 end)
 
-local AttackList = { "0", "0.1", "0.15", "0.155", "0.16", "0.165", "0.17", "0.175", "0.18", "0.185" }
+local AttackList = {"0", "0.1", "0.15", "0.155", "0.16", "0.165", "0.17", "0.175", "0.18", "0.185"}
 _G.FastAttackDelay = "0.175"
-
-Setting:Dropdown("Fast Attack Delay (Default)", AttackList, function(MakoGay)
-    _G.FastAttackDelay = tonumber(MakoGay) or 0.175
+Setting:Dropdown("Fast Attack Delay (Default)", AttackList,function(MakoGay)
+    _G.FastAttackDelay = MakoGay
 end)
 
--- Update FastAttackDelay periodically
 spawn(function()
-    while wait(0.1) do
+    while wait(.1) do
         if _G.FastAttackDelay then
             pcall(function()
-                _G.FastAttackDelay = tonumber(_G.FastAttackDelay) or 0.175
+                if _G.FastAttackDelay == "0" then
+                    _G.FastAttackDelay = 0
+                elseif _G.FastAttackDelay == "0.1" then
+                    _G.FastAttackDelay = 0.1
+                elseif _G.FastAttackDelay == "0.15" then
+                    _G.FastAttackDelay = 0.15
+                elseif _G.FastAttackDelay == "0.155" then
+                    _G.FastAttackDelay = 0.155
+                elseif _G.FastAttackDelay == "0.16" then
+                    _G.FastAttackDelay = 0.16
+                elseif _G.FastAttackDelay == "0.165" then
+                    _G.FastAttackDelay = 0.165
+                elseif _G.FastAttackDelay == "0.17" then
+                    _G.FastAttackDelay = 0.17
+                elseif _G.FastAttackDelay == "0.175" then
+                    _G.FastAttackDelay = 0.175
+                elseif _G.FastAttackDelay == "0.18" then
+                    _G.FastAttackDelay = 0.18
+                elseif _G.FastAttackDelay == "0.185" then
+                    _G.FastAttackDelay = 0.185
+                end
             end)
         end
     end
 end)
 
--- Function to get the current blade hit
-local function getBladeHit()
-    local CombatFrameworkLib = debug.getupvalues(CombatFrameworkR)
+function GetBladeHit()
+    local CombatFrameworkLib = debug.getupvalues(require(game:GetService("Players").LocalPlayer.PlayerScripts.CombatFramework))
     local CmrFwLib = CombatFrameworkLib[2]
     local p13 = CmrFwLib.activeController
     local weapon = p13.blades[1]
-    if not weapon then
+    if not weapon then 
         return weapon
     end
     while weapon.Parent ~= game.Players.LocalPlayer.Character do
-        weapon = weapon.Parent
+        weapon = weapon.Parent 
     end
     return weapon
 end
-
--- Function to handle attack hit
-local function attackHit()
-    local CombatFrameworkLib = debug.getupvalues(CombatFrameworkR)
+function AttackHit()
+    local CombatFrameworkLib = debug.getupvalues(require(game:GetService("Players").LocalPlayer.PlayerScripts.CombatFramework))
     local CmrFwLib = CombatFrameworkLib[2]
     local plr = game.Players.LocalPlayer
-
     for i = 1, 1 do
-        local bladeHit = STOPRL.getBladeHits(plr.Character, { plr.Character.HumanoidRootPart }, 60)
-        local uniqueHits = {}
+        local bladehit = require(game.ReplicatedStorage.CombatFramework.RigLib).getBladeHits(plr.Character,{plr.Character.HumanoidRootPart},60)
+        local cac = {}
         local hash = {}
-
-        for k, v in pairs(bladeHit) do
+        for k, v in pairs(bladehit) do
             if v.Parent:FindFirstChild("HumanoidRootPart") and not hash[v.Parent] then
-                table.insert(uniqueHits, v.Parent.HumanoidRootPart)
+                table.insert(cac, v.Parent.HumanoidRootPart)
                 hash[v.Parent] = true
             end
         end
-
-        bladeHit = uniqueHits
-
-        if #bladeHit > 0 then
+        bladehit = cac
+        if #bladehit > 0 then
             pcall(function()
                 CmrFwLib.activeController.timeToNextAttack = 1
                 CmrFwLib.activeController.attacking = false
@@ -3426,22 +3427,18 @@ local function attackHit()
                 CmrFwLib.activeController.increment = 3
                 CmrFwLib.activeController.hitboxMagnitude = 60
                 CmrFwLib.activeController.focusStart = 0
-
-                game:GetService("ReplicatedStorage").RigControllerEvent:FireServer("weaponChange", tostring(getBladeHit()))
-                game:GetService("ReplicatedStorage").RigControllerEvent:FireServer("hit", bladeHit, i, "")
+                game:GetService("ReplicatedStorage").RigControllerEvent:FireServer("weaponChange",tostring(GetBladeHit()))
+                game:GetService("ReplicatedStorage").RigControllerEvent:FireServer("hit", bladehit, i, "")
             end)
         end
     end
 end
-
--- Function to repeatedly perform fast attacks
 spawn(function()
-    while wait(0.1) do
+    while wait(.1) do
         if _G.FastAttack then
             pcall(function()
-                repeat
-                    task.wait(_G.FastAttackDelay)
-                    attackHit()
+                repeat task.wait(_G.FastAttackDelay)
+                    AttackHit()
                 until not _G.FastAttack
             end)
         end
