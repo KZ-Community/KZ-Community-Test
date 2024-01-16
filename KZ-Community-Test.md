@@ -8894,7 +8894,6 @@ spawn(function()
                         or not game:GetService("Workspace").Enemies:FindFirstChild("Piranha")
                         or not game:GetService("Workspace").Enemies:FindFirstChild("Fish Crew Member") then
                         _G.tpboat = true
-                        _G.tpboat = false
                     if not game:GetService("Workspace").Boats:FindFirstChild("PirateBrigade") then
                         local buyb = TPP(CFrame.new(-6123.90088, 16.4465275, -2249.2832, -0.54705143, 1.08052314e-08, 0.837098956, 2.53016292e-08, 1, 3.62688457e-09, -0.837098956, 2.31640609e-08, -0.54705143))
                         if (CFrame.new(-6123.90088, 16.4465275, -2249.2832, -0.54705143, 1.08052314e-08, 0.837098956, 2.53016292e-08, 1, 3.62688457e-09, -0.837098956, 2.31640609e-08, -0.54705143).Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).magnitude <= 10 then
@@ -8913,7 +8912,7 @@ spawn(function()
                                 for i,v in pairs(game:GetService("Workspace").Boats:GetChildren()) do
                                     if v.Name == "PirateBrigade" then
                                         repeat wait()
-                                            if (CFrame.new(-17013.80078125, 10.962434768676758, 438.0169982910156).Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).magnitude <= 10 then
+                                            if (CFrame.new(-6153.0166, 12.5979462, -2176.19141, -0.94, 0.052, -0.33, 0.056, 0.998, -0.001, 0.333, -0.02, -0.94).Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).magnitude <= 10 then
                                                 TPB(CFrame.new(-33163.1875, 10.964323997497559, -324.4842224121094))
                                             elseif (CFrame.new(-33163.1875, 10.964323997497559, -324.4842224121094).Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).magnitude <= 10 then
                                                 TPB(CFrame.new(-37952.49609375, 10.96342945098877, -1324.12109375))
@@ -8957,6 +8956,7 @@ spawn(function()
         game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(point)
 		game.Players.LocalPlayer.Character.Humanoid:ChangeState(15)
 		game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("SetSpawnPoint")
+		        _G.tpboat = false
                 StopTween = true
                 end
             end
