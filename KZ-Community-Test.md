@@ -8949,14 +8949,15 @@ local point = Vector3.new(-5074.45556640625, 314.5155334472656, -2991.0544433593
 
 spawn(function()
     pcall(function()
-        while wait(5) do
+        while wait() do
             if _G.tpboat then
                 if not game:GetService("Workspace").Boats:FindFirstChild("PirateBrigade") then
                 StopTween = false
         game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(point)
 		game.Players.LocalPlayer.Character.Humanoid:ChangeState(15)
 		game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("SetSpawnPoint")
-		        _G.tpboat = false
+		_G.tpboat = false
+	        wait(2)
                 StopTween = true
                 end
             end
