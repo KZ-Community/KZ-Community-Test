@@ -8949,7 +8949,7 @@ local point = Vector3.new(-5074.45556640625, 314.5155334472656, -2991.0544433593
 
 spawn(function()
     pcall(function()
-        while wait() do
+        while wait(5) do
             if _G.tpboat then
                 if not game:GetService("Workspace").Boats:FindFirstChild("PirateBrigade") then
                 StopTween = false
