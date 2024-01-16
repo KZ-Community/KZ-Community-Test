@@ -8951,7 +8951,10 @@ spawn(function()
             if _G.tpboat then
                 if not game:GetService("Workspace").Boats:FindFirstChild("PirateBrigade") then
                     _G.DomadicAutoDriveBoat = false
-                    game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("requestEntrance", Vector3.new(-5079.44677734375, 313.7293395996094, -3151.065185546875))
+                    wait(.1)
+		game.Players.localPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-5074.45556640625, 314.5155334472656, -2991.054443359375)
+		game:GetService("Players").LocalPlayer.Character.LowerTorso:Destroy()
+		game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("SetSpawnPoint")
                     _G.tpboat = false
                     _G.DomadicAutoDriveBoat = true
                     repeat wait() until not _G.tpboat or game:GetService("Workspace").Boats:FindFirstChild("PirateBrigade")
