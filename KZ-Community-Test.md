@@ -9059,7 +9059,7 @@ spawn(function()
                 local boatNotExist = not game:GetService("Workspace").Boats:FindFirstChild("PirateBrigade")
 
                 if not enemiesExist and boatNotExist then
-                    local buyb = TPP(CFrame.new(-6123.90088, 16.4465275, -2249.2832, -0.54705143, 1.08052314e-08, 0.837098956, 2.53016292e-08, 1, 3.62688457e-09, -0.837098956, 2.31640609e-08, -0.54705143))
+                    local buyb = TPP(CFrame.new(-6123.64697, 16.4465275, -2249.93823, -0.54036355, -1.51463453e-10, 0.841431618, -1.05020215e-08, 1, -6.56434374e-09, -0.841431618, -1.23838655e-08, -0.54036355))
                     
                     if buyb and (buyb.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude <= 10 then
                         buyb:Stop()
