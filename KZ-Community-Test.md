@@ -16045,7 +16045,7 @@ end
 -- Function to perform fast attacks without cooldown
 function AttackNoCD()
     local AC = CbFw2.activeController
-    for i = 1, 1 do
+    for i = 1, 2 do
         local bladeHit = require(game.ReplicatedStorage.CombatFramework.RigLib).getBladeHits(
             plr.Character,
             { plr.Character.HumanoidRootPart },
@@ -16073,7 +16073,7 @@ function AttackNoCD()
                 u8 = math.floor(u12 / u9)
                 u7 = u12 - u8 * u9
             end)()
-            u10 = u10 + 1
+            u10 = u10 + 5
             debug.setupvalue(AC.attack, 5, u8)
             debug.setupvalue(AC.attack, 6, u9)
             debug.setupvalue(AC.attack, 4, u7)
