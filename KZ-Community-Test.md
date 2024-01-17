@@ -2853,9 +2853,8 @@ end
     end
    
     
-    function GetDistance(target)
-    return math.floor((target.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude)
-end
+    -- เพิ่มระยะเวลาที่จะใช้ในการทำ Tween
+local tweenTime = 0.5  -- ปรับตามความต้องการ
 
 function BTP(p)
     pcall(function()
@@ -2863,17 +2862,11 @@ function BTP(p)
             local humanoidRootPart = game.Players.LocalPlayer.Character.HumanoidRootPart
             local targetCFrame = CFrame.new(p.Position)
 
-            local tweenInfo = TweenInfo.new(2, Enum.EasingStyle.Linear)  -- ปรับค่าตามความต้องการ
+            local tweenInfo = TweenInfo.new(tweenTime, Enum.EasingStyle.Linear)
             local tween = game:GetService("TweenService"):Create(humanoidRootPart, tweenInfo, { CFrame = targetCFrame })
 
             tween:Play()
-
-            repeat
-                wait()
-            until (p.Position - humanoidRootPart.Position).Magnitude < 1500 and game.Players.LocalPlayer.Character.Humanoid.Health > 0
-
-            tween:Cancel()
-            humanoidRootPart.CFrame = targetCFrame
+            tween:Wait()
         end
     end)
 end
@@ -2882,7 +2875,7 @@ function TelePPlayer(P)
     local humanoidRootPart = game.Players.LocalPlayer.Character.HumanoidRootPart
     local targetCFrame = CFrame.new(P.Position)
 
-    local tweenInfo = TweenInfo.new(2, Enum.EasingStyle.Linear)  -- ปรับค่าตามความต้องการ
+    local tweenInfo = TweenInfo.new(tweenTime, Enum.EasingStyle.Linear)
     local tween = game:GetService("TweenService"):Create(humanoidRootPart, tweenInfo, { CFrame = targetCFrame })
 
     tween:Play()
@@ -2903,8 +2896,10 @@ function TP1(Pos)
     local humanoidRootPart = game.Players.LocalPlayer.Character.HumanoidRootPart
     local initialCFrame = humanoidRootPart.CFrame
 
+    local tweenSpeed = TweeSpeed or 250  -- ใช้ TweeSpeed หรือใช้ค่าเริ่มต้น 210 ถ้าไม่ได้กำหนด TweeSpeed
+
     pcall(function()
-        local tweenInfo = TweenInfo.new(Distance / 210, Enum.EasingStyle.Linear)
+        local tweenInfo = TweenInfo.new(Distance / tweenSpeed, Enum.EasingStyle.Linear)
         local tween = game:GetService("TweenService"):Create(humanoidRootPart, tweenInfo, { CFrame = Pos })
 
         tween:Play()
@@ -2959,7 +2954,9 @@ end
         return
     end
 
-    local tweenInfo = TweenInfo.new(Distance / 210, Enum.EasingStyle.Linear)
+    local tweenSpeed = TweeSpeed or 250  -- ใช้ TweeSpeed หรือใช้ค่าเริ่มต้น 210 ถ้าไม่ได้กำหนด TweeSpeed
+
+    local tweenInfo = TweenInfo.new(Distance / tweenSpeed, Enum.EasingStyle.Linear)
     local humanoidRootPart = game.Players.LocalPlayer.Character.HumanoidRootPart
 
     local isTweening = true
@@ -2968,7 +2965,7 @@ end
     tween:Play()
 
     spawn(function()
-        wait(Distance / 210)
+        wait(Distance / tweenSpeed)
         isTweening = false
     end)
 
@@ -2982,47 +2979,76 @@ end
     
 --Tween Boats 
 function TPB(CFgo)
+    local vehicleSeat = game:GetService("Workspace").Boats.PirateBrigade.VehicleSeat
+    local humanoid = game.Players.LocalPlayer.Character:WaitForChild("Humanoid")
     local tween_s = game:GetService("TweenService")
-    local info = TweenInfo.new((game:GetService("Workspace").Boats.PirateBrigade.VehicleSeat.CFrame.Position - CFgo.Position).Magnitude / 250, Enum.EasingStyle.Linear)
 
-    local tween = tween_s:Create(game:GetService("Workspace").Boats.PirateBrigade.VehicleSeat, info, { CFrame = CFgo })
+    local tweenSpeedBoat = 250  -- ค่าเริ่มต้น
+    local tweenSpeedChanged = false  -- เพื่อตรวจสอบว่ามีการเปลี่ยนแปลงค่า Tween Speed หรือไม่
+
+    local function createTweenInfo()
+        return TweenInfo.new((vehicleSeat.CFrame.Position - CFgo.Position).Magnitude / tweenSpeedBoat, Enum.EasingStyle.Linear)
+    end
+
+    local isTweening = false
+    local tween
 
     local tweenfunc = {}
 
     function tweenfunc:Play()
-        if game.Players.LocalPlayer.Character:WaitForChild("Humanoid").Health <= 0 or not game:GetService("Players").LocalPlayer.Character:WaitForChild("Humanoid") then
+        if humanoid.Health <= 0 or not humanoid then
             return
         end
+
+        local newTweenInfo = createTweenInfo()
+        tween = tween_s:Create(vehicleSeat, newTweenInfo, { CFrame = CFgo })
+
+        isTweening = true
+
+        tween.Completed:Connect(function()
+            isTweening = false
+        end)
 
         tween:Play()
     end
 
     function tweenfunc:Stop()
-        tween:Cancel()
+        if isTweening then
+            tween:Cancel()
+            isTweening = false
+        end
     end
 
     return tweenfunc
 end
 
+
 function TPP(CFgo)
     local humanoidRootPart = game.Players.LocalPlayer.Character:WaitForChild("HumanoidRootPart")
     local tween_s = game:GetService("TweenService")
-    local info = TweenInfo.new((humanoidRootPart.Position - CFgo.Position).Magnitude / 325, Enum.EasingStyle.Linear)
+    local tweenInfo = TweenInfo.new((humanoidRootPart.Position - CFgo.Position).Magnitude / 325, Enum.EasingStyle.Linear)
 
-    local tween = tween_s:Create(humanoidRootPart, info, { CFrame = CFgo })
+    local tween = tween_s:Create(humanoidRootPart, tweenInfo, { CFrame = CFgo })
+
+    local isTweening = false
 
     local tweenfunc = {}
 
     function tweenfunc:Play()
-        if game.Players.LocalPlayer.Character:WaitForChild("Humanoid").Health <= 0 or not game:GetService("Players").LocalPlayer.Character:WaitForChild("Humanoid") then
-            return
-        end
+        if game.Players.LocalPlayer.Character:FindFirstChild("Humanoid") and game.Players.LocalPlayer.Character.Humanoid.Health > 0 then
+            tween:Play()
 
-        tween:Play()
+            isTweening = true
+
+            tween.Completed:Connect(function()
+                isTweening = false
+            end)
+        end
     end
 
     function tweenfunc:Stop()
         tween:Cancel()
+        isTweening = false
     end
 
     return tweenfunc
@@ -3306,8 +3332,8 @@ function UpdateTime()
         return LocalizationService:GetCountryRegionForPlayerAsync(player)
     end)
 
-    Time:Set(" : " .. timezone)
-    dateTimeLabel:Set("Executor Time: " .. datetime .. " [ " .. code .. " ]")
+    Time:Set("Executor Time : " .. timezone)
+    dateTimeLabel:Set("Executor Calendar: " .. datetime .. " [ " .. code .. " ]")
 end
 
 Setting:Label("Script PC/Mobile")
@@ -3735,10 +3761,15 @@ end)
     
     Setting:Seperator("Setting Farm Mode")
 
+    Setting:Label("Speed Tween")
     Setting:Label("Distance X Right Vector")
     Setting:Label("Distance Y Up Vector")
     Setting:Label("Distance Z Behind Vector")
 
+
+    Setting:Slider("Tween Speed",1,300,250,function(value)
+        TweeSpeed = value
+    end)
 
     PosY = 35
     Setting:Slider("Pos Y Distance Farm ",0,50,35,function(value)
@@ -9008,8 +9039,8 @@ M:Toggle("Auto Tushita", _G.Autotushita,function(value)
 
 M:Button("Bypass Drive Boat (Click only when the ship disappears..)", function()
     if not game:GetService("Workspace").Boats:FindFirstChild("PirateBrigade") then
-        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(point)
-        game.Players.LocalPlayer.Character.Humanoid:ChangeState(15)
+        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("requestEntrance",Vector3.new(-5079.44677734375, 313.7293395996094, -3151.065185546875))
+        wait(.1)
         game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("SetSpawnPoint")
     end
 end)
@@ -9019,68 +9050,63 @@ end)
     StopTween(_G.DomadicAutoDriveBoat)
     end)
 
-function buyBoatIfNotExists()
-    if not game:GetService("Workspace").Boats:FindFirstChild("PirateBrigade") then
-        local buyb = TPP(CFrame.new(-6123.90088, 16.4465275, -2249.2832, -0.54705143, 1.08052314e-08, 0.837098956, 2.53016292e-08, 1, 3.62688457e-09, -0.837098956, 2.31640609e-08, -0.54705143))
-        if (buyb and (buyb.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).magnitude <= 10) then
-            buyb:Stop()
-            game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("BuyBoat", "PirateBrigade")
-        end
-    end
-end
-
 spawn(function()
-    while wait() do
-        pcall(function()
-            if _G.DomadicAutoDriveBoat then
-                local enemiesAbsent = not (
-                    game:GetService("Workspace").Enemies:FindFirstChild("Shark") or
-                    game:GetService("Workspace").Enemies:FindFirstChild("Terrorshark") or
-                    game:GetService("Workspace").Enemies:FindFirstChild("Piranha") or
-                    game:GetService("Workspace").Enemies:FindFirstChild("Fish Crew Member")
-                )
-                local boatAbsent = not game:GetService("Workspace").Boats:FindFirstChild("PirateBrigade")
-
-                if enemiesAbsent and boatAbsent then
-                    buyBoatIfNotExists()
-                elseif game:GetService("Workspace").Boats:FindFirstChild("PirateBrigade") then
-                    local vehicleSeatCFrame = game:GetService("Workspace").Boats.PirateBrigade.VehicleSeat.CFrame * CFrame.new(0, 1, 0)
-
-                    if game.Players.LocalPlayer.Character:WaitForChild("Humanoid").Sit == false then
-                        TPP(vehicleSeatCFrame)
-                    else
-                        repeat wait()
-                            local targetPosition = CFrame.new(-6153.0166, 12.5979462, -2176.19141)
-                            if (targetPosition.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).magnitude <= 10 then
-                                TPB(CFrame.new(-33163.1875, 10.964323997497559, -324.4842224121094))
-                            elseif (CFrame.new(-33163.1875, 10.964323997497559, -324.4842224121094).Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).magnitude <= 10 then
-                                TPB(CFrame.new(-37952.49609375, 10.96342945098877, -1324.12109375))
-                            elseif (CFrame.new(-37952.49609375, 10.96342945098877, -1324.12109375).Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).magnitude <= 10 then
-                                TPB(CFrame.new(-33163.1875, 10.964323997497559, -324.4842224121094))
+        while wait() do
+            pcall(function()
+                if _G.DomadicAutoDriveBoat then
+                    if not game:GetService("Workspace").Enemies:FindFirstChild("Shark") or not game:GetService("Workspace").Enemies:FindFirstChild("Terrorshark") or not game:GetService("Workspace").Enemies:FindFirstChild("Piranha") or not game:GetService("Workspace").Enemies:FindFirstChild("Fish Crew Member") then
+                        if not game:GetService("Workspace").Boats:FindFirstChild("PirateBrigade") then
+                            buyb = TPP(CFrame.new(-6123.90088, 16.4465275, -2249.2832, -0.54705143, 1.08052314e-08, 0.837098956, 2.53016292e-08, 1, 3.62688457e-09, -0.837098956, 2.31640609e-08, -0.54705143))
+                            if (CFrame.new(-6123.90088, 16.4465275, -2249.2832, -0.54705143, 1.08052314e-08, 0.837098956, 2.53016292e-08, 1, 3.62688457e-09, -0.837098956, 2.31640609e-08, -0.54705143).Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).magnitude <= 10 then
+                                if buyb then buyb:Stop() end
+                                local args = {
+                                    [1] = "BuyBoat",
+                                    [2] = "PirateBrigade"
+                                }
+    
+                                game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
                             end
-                        until not _G.DomadicAutoDriveBoat or not game:GetService("Workspace").Enemies:FindFirstChild("Shark") or not game:GetService("Workspace").Enemies:FindFirstChild("Terrorshark") or not game:GetService("Workspace").Enemies:FindFirstChild("Piranha") or not game:GetService("Workspace").Enemies:FindFirstChild("Fish Crew Member")
+                        elseif game:GetService("Workspace").Boats:FindFirstChild("PirateBrigade") then
+                            if game.Players.LocalPlayer.Character:WaitForChild("Humanoid").Sit == false then
+                                TPP(game:GetService("Workspace").Boats.PirateBrigade.VehicleSeat.CFrame * CFrame.new(0,1,0))
+                            else
+                                for i,v in pairs(game:GetService("Workspace").Boats:GetChildren()) do
+                                    if v.Name == "PirateBrigade" then
+                                        repeat wait()
+                                            if (CFrame.new(-6153.0166, 12.5979462, -2176.19141).Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).magnitude <= 10 then
+                                                TPB(CFrame.new(-33163.1875, 10.964323997497559, -324.4842224121094))
+                                            elseif (CFrame.new(-33163.1875, 10.964323997497559, -324.4842224121094).Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).magnitude <= 10 then
+                                                TPB(CFrame.new(-37952.49609375, 10.96342945098877, -1324.12109375))
+                                            elseif (CFrame.new(-37952.49609375, 10.96342945098877, -1324.12109375).Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).magnitude <= 10 then
+                                                TPB(CFrame.new(-33163.1875, 10.964323997497559, -324.4842224121094))
+                                            end 
+                                        until game:GetService("Workspace").Enemies:FindFirstChild("Shark") or game:GetService("Workspace").Enemies:FindFirstChild("Terrorshark") or game:GetService("Workspace").Enemies:FindFirstChild("Piranha") or game:GetService("Workspace").Enemies:FindFirstChild("Fish Crew Member") or _G.DomadicAutoDriveBoat == false
+                                    end
+                                end
+                            end
+                        end
                     end
                 end
-            end
-        end)
-    end
-end)
-
-spawn(function()
-    pcall(function()
-        while wait() do
-            if _G.DomadicAutoDriveBoat then
-                if game:GetService("Workspace").Enemies:FindFirstChild("Shark")
-                        or game:GetService("Workspace").Enemies:FindFirstChild("Terrorshark")
-                        or game:GetService("Workspace").Enemies:FindFirstChild("Piranha")
-                        or game:GetService("Workspace").Enemies:FindFirstChild("Fish Crew Member") then
-                    game.Players.LocalPlayer.Character.Humanoid.Sit = false
-                end
-            end
+            end)
         end
     end)
-end)
+    
+    spawn(function()
+		pcall(function()
+			while wait() do
+				if _G.DomadicAutoDriveBoat then
+					if game:GetService("Workspace").Enemies:FindFirstChild("Shark") or game:GetService("Workspace").Enemies:FindFirstChild("Terrorshark") or game:GetService("Workspace").Enemies:FindFirstChild("Piranha") or game:GetService("Workspace").Enemies:FindFirstChild("Fish Crew Member") then
+					    game.Players.LocalPlayer.Character.Humanoid.Sit = false
+					end
+				end
+			end
+		end)
+	end)
 
+    M:Slider("Tween Speed Boat", 1, 300, 250, function(value)
+        tweenSpeedBoat = value
+        tweenSpeedChanged = true
+    end)
 
 ---spawn(function()
 ---    pcall(function()
@@ -13119,68 +13145,35 @@ end)
                 if _G.Auto_Dungeon then
                     if game:GetService("Players")["LocalPlayer"].PlayerGui.Main.Timer.Visible == true then
                         if game:GetService("Workspace")["_WorldOrigin"].Locations:FindFirstChild("Island 5") then
-                            topos(game:GetService("Workspace")["_WorldOrigin"].Locations:FindFirstChild("Island 5").CFrame*RaidPos)
+                            topos(game:GetService("Workspace")["_WorldOrigin"].Locations:FindFirstChild("Island 5").CFrame*CFrame.new(0,25,0))
                         elseif game:GetService("Workspace")["_WorldOrigin"].Locations:FindFirstChild("Island 4") then
-                            topos(game:GetService("Workspace")["_WorldOrigin"].Locations:FindFirstChild("Island 4").CFrame*RaidPos)
+                            topos(game:GetService("Workspace")["_WorldOrigin"].Locations:FindFirstChild("Island 4").CFrame*CFrame.new(0,25,0))
                         elseif game:GetService("Workspace")["_WorldOrigin"].Locations:FindFirstChild("Island 3") then
-                            topos(game:GetService("Workspace")["_WorldOrigin"].Locations:FindFirstChild("Island 3").CFrame*RaidPos)
+                            topos(game:GetService("Workspace")["_WorldOrigin"].Locations:FindFirstChild("Island 3").CFrame*CFrame.new(0,25,0))
                         elseif game:GetService("Workspace")["_WorldOrigin"].Locations:FindFirstChild("Island 2") then
-                            topos(game:GetService("Workspace")["_WorldOrigin"].Locations:FindFirstChild("Island 2").CFrame*RaidPos)
+                            topos(game:GetService("Workspace")["_WorldOrigin"].Locations:FindFirstChild("Island 2").CFrame*CFrame.new(0,25,0))
                         elseif game:GetService("Workspace")["_WorldOrigin"].Locations:FindFirstChild("Island 1") then
-                            topos(game:GetService("Workspace")["_WorldOrigin"].Locations:FindFirstChild("Island 1").CFrame*RaidPos)
+                            topos(game:GetService("Workspace")["_WorldOrigin"].Locations:FindFirstChild("Island 1").CFrame*CFrame.new(0,25,0))
                         end
                     end
                 end
             end
         end)
     end)
-    
-    Type = 1
-spawn(function()
-    while wait(.1) do
-        if Type == 1 then
-            RaidPos = CFrame.new(0,30,0)
-		elseif Type == 2 then
-			RaidPos = CFrame.new(0,30,0)
-		elseif Type == 3 then
-			RaidPos = CFrame.new(0,30,0)
-		elseif Type == 4 then
-			RaidPos = CFrame.new(0,30,0)
-		elseif Type == 5 then
-			RaidPos = CFrame.new(0,30,0)
-		elseif Type == 6 then
-			RaidPos = CFrame.new(0,30,0)
-        end
-        end
-    end)
-
-spawn(function()
-    while wait(.1) do
-        Type = 1
-        wait(1)
-        Type = 2
-        wait(1)
-        Type = 3
-        wait(1)
-        Type = 4
-        wait(1)
-        Type = 5
-        wait(1)
-        Type = 6
-        wait(1)
-    end
-end)
 
 spawn(function()
     pcall(function()
         while wait() do
             if _G.Auto_Dungeon and game:GetService("Players")["LocalPlayer"].PlayerGui.Main.Timer.Visible == true then
-                for i, v in pairs(game:GetService("Workspace").Enemies:GetDescendants()) do
+                local attackRadius = 250  -- ปรับระยะการทำลายตามต้องการ
+                sethiddenproperty(game:GetService("Players").LocalPlayer, "SimulationRadius", math.huge)
+                for _, v in pairs(game:GetService("Workspace").Enemies:GetDescendants()) do
                     if v:FindFirstChild("Humanoid") and v:FindFirstChild("HumanoidRootPart") and v.Humanoid.Health > 0 then
                         pcall(function()
-                            sethiddenproperty(game:GetService("Players").LocalPlayer, "SimulationRadius", math.huge)
-                            v.Humanoid.Health = 0
-                            v.HumanoidRootPart.CanCollide = false
+                            if (v.HumanoidRootPart.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude <= attackRadius then
+                                v.Humanoid.Health = 0
+                                v.HumanoidRootPart.CanCollide = false
+                            end
                         end)
                     end
                 end
