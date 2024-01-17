@@ -2862,7 +2862,7 @@ function BTP(p)
             local humanoidRootPart = game.Players.LocalPlayer.Character.HumanoidRootPart
             local targetCFrame = CFrame.new(p.Position)
 
-            local tweenInfo = TweenInfo.new(tweenTime, Enum.EasingStyle.Linear)
+            local tweenInfo = TweenInfo.new(tweenTime, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut)
             local tween = game:GetService("TweenService"):Create(humanoidRootPart, tweenInfo, { CFrame = targetCFrame })
 
             tween:Play()
@@ -2875,7 +2875,7 @@ function TelePPlayer(P)
     local humanoidRootPart = game.Players.LocalPlayer.Character.HumanoidRootPart
     local targetCFrame = CFrame.new(P.Position)
 
-    local tweenInfo = TweenInfo.new(tweenTime, Enum.EasingStyle.Linear)
+    local tweenInfo = TweenInfo.new(tweenTime, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut)
     local tween = game:GetService("TweenService"):Create(humanoidRootPart, tweenInfo, { CFrame = targetCFrame })
 
     tween:Play()
@@ -2899,7 +2899,7 @@ function TP1(Pos)
     local tweenSpeed = TweeSpeed or 250  -- ใช้ TweeSpeed หรือใช้ค่าเริ่มต้น 210 ถ้าไม่ได้กำหนด TweeSpeed
 
     pcall(function()
-        local tweenInfo = TweenInfo.new(Distance / tweenSpeed, Enum.EasingStyle.Linear)
+        local tweenInfo = TweenInfo.new(Distance / tweenSpeed, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut)
         local tween = game:GetService("TweenService"):Create(humanoidRootPart, tweenInfo, { CFrame = Pos })
 
         tween:Play()
@@ -2924,7 +2924,7 @@ end
     local Speed = (Distance < 250) and 600 or 200
 
     local humanoidRootPart = game:GetService("Players").LocalPlayer.Character.HumanoidRootPart
-    local tweenInfo = TweenInfo.new(Distance / Speed, Enum.EasingStyle.Linear)
+    local tweenInfo = TweenInfo.new(Distance / Speed, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut)
     local tween = game:GetService("TweenService"):Create(humanoidRootPart, tweenInfo, { CFrame = Pos })
 
     _G.Clip = true
@@ -2944,34 +2944,25 @@ end
 end
 
     function topos(Pos)
-    local Distance = (Pos.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
+    local humanoidRootPart = game.Players.LocalPlayer.Character.HumanoidRootPart
+    local Distance = (Pos.Position - humanoidRootPart.Position).Magnitude
 
     if game.Players.LocalPlayer.Character.Humanoid.Sit then
         game.Players.LocalPlayer.Character.Humanoid.Sit = false
     end
 
-    if _G.StopTween then
-        return
-    end
-
-    local tweenSpeed = TweeSpeed or 250  -- ใช้ TweeSpeed หรือใช้ค่าเริ่มต้น 210 ถ้าไม่ได้กำหนด TweeSpeed
-
-    local tweenInfo = TweenInfo.new(Distance / tweenSpeed, Enum.EasingStyle.Linear)
-    local humanoidRootPart = game.Players.LocalPlayer.Character.HumanoidRootPart
-
-    local isTweening = true
-
+    local tweenSpeed = TweeSpeed or 250  -- ใช้ค่า TweeSpeed ถ้ามี ไม่มีก็ให้ใช้ค่าเริ่มต้น 250
+    local tweenInfo = TweenInfo.new(Distance / tweenSpeed, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut)
     local tween = game:GetService("TweenService"):Create(humanoidRootPart, tweenInfo, { CFrame = Pos })
+
     tween:Play()
 
-    spawn(function()
-        wait(Distance / tweenSpeed)
-        isTweening = false
-    end)
+    if Distance <= 250 then
+        tween:Cancel()
+        humanoidRootPart.CFrame = Pos
+    end
 
-    wait()
-
-    if isTweening then
+    if _G.StopTween then
         tween:Cancel()
         _G.Clip = false
     end
@@ -2980,7 +2971,7 @@ end
 --Tween Boats 
 function TPB(CFgo)
 	local tween_s = game:service"TweenService"
-	local info = TweenInfo.new((game:GetService("Workspace").Boats.PirateBrigade.VehicleSeat.CFrame.Position - CFgo.Position).Magnitude/300, Enum.EasingStyle.Linear)
+	local info = TweenInfo.new((game:GetService("Workspace").Boats.PirateBrigade.VehicleSeat.CFrame.Position - CFgo.Position).Magnitude/300, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut)
 	tween = tween_s:Create(game:GetService("Workspace").Boats.PirateBrigade.VehicleSeat, info, {CFrame = CFgo})
 	tween:Play()
 
@@ -2996,7 +2987,7 @@ end
 function TPP(CFgo)
 	if game.Players.LocalPlayer.Character:WaitForChild("Humanoid").Health <= 0 or not game:GetService("Players").LocalPlayer.Character:WaitForChild("Humanoid") then tween:Cancel() repeat wait() until game:GetService("Players").LocalPlayer.Character:WaitForChild("Humanoid") and game:GetService("Players").LocalPlayer.Character:WaitForChild("Humanoid").Health > 0 wait(7) return end
 	local tween_s = game:service"TweenService"
-	local info = TweenInfo.new((game:GetService("Players")["LocalPlayer"].Character.HumanoidRootPart.Position - CFgo.Position).Magnitude/325, Enum.EasingStyle.Linear)
+	local info = TweenInfo.new((game:GetService("Players")["LocalPlayer"].Character.HumanoidRootPart.Position - CFgo.Position).Magnitude/325, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut)
 	tween = tween_s:Create(game.Players.LocalPlayer.Character["HumanoidRootPart"], info, {CFrame = CFgo})
 	tween:Play()
 
