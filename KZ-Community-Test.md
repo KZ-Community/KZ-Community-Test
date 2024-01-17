@@ -2854,153 +2854,231 @@ end
    
     
     function GetDistance(target)
-        return math.floor((target.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude)
-    end
-    
-    function BTP(p)
-    	pcall(function()
-	    	if (p.Position-game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude >= 1500 and not Auto_Raid and game.Players.LocalPlayer.Character.Humanoid.Health > 0 then
-				repeat wait()
-					game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = p
-					wait(.05)
-					game.Players.LocalPlayer.Character.Head:Destroy()
-					game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = p
-				until (p.Position-game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude < 1500 and game.Players.LocalPlayer.Character.Humanoid.Health > 0
-			end
-		end)
-	end
+    return math.floor((target.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude)
+end
+
+function BTP(p)
+    pcall(function()
+        if (p.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude >= 1500 and not Auto_Raid and game.Players.LocalPlayer.Character.Humanoid.Health > 0 then
+            local humanoidRootPart = game.Players.LocalPlayer.Character.HumanoidRootPart
+            local targetCFrame = CFrame.new(p.Position)
+
+            local tweenInfo = TweenInfo.new(2, Enum.EasingStyle.Linear)  -- ปรับค่าตามความต้องการ
+            local tween = game:GetService("TweenService"):Create(humanoidRootPart, tweenInfo, { CFrame = targetCFrame })
+
+            tween:Play()
+
+            repeat
+                wait()
+            until (p.Position - humanoidRootPart.Position).Magnitude < 1500 and game.Players.LocalPlayer.Character.Humanoid.Health > 0
+
+            tween:Cancel()
+            humanoidRootPart.CFrame = targetCFrame
+        end
+    end)
+end
 
 function TelePPlayer(P)
-	game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = P
+    local humanoidRootPart = game.Players.LocalPlayer.Character.HumanoidRootPart
+    local targetCFrame = CFrame.new(P.Position)
+
+    local tweenInfo = TweenInfo.new(2, Enum.EasingStyle.Linear)  -- ปรับค่าตามความต้องการ
+    local tween = game:GetService("TweenService"):Create(humanoidRootPart, tweenInfo, { CFrame = targetCFrame })
+
+    tween:Play()
+    tween:Wait()
 end
-    
 
 function TP1(Pos)
-        Distance = (Pos.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
-        if game.Players.LocalPlayer.Character.Humanoid.Sit == true then game.Players.LocalPlayer.Character.Humanoid.Sit = false end
-        pcall(function() tween = game:GetService("TweenService"):Create(game.Players.LocalPlayer.Character.HumanoidRootPart,TweenInfo.new(Distance/210, Enum.EasingStyle.Linear),{CFrame = Pos}) end)
-        tween:Play()
-        if Distance <= 250 then
-            tween:Cancel()
-            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = Pos
-        end
-        if _G.StopTween == true then
-            tween:Cancel()
-            _G.Clip = false
-        end
-    end
-    
-    function TP(Pos)
-        Distance = (Pos.Position - game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
-        if Distance < 250 then
-            Speed = 600
-        elseif Distance >= 1000 then
-            Speed = 200
-        end
-        game:GetService("TweenService"):Create(
-            game:GetService("Players").LocalPlayer.Character.HumanoidRootPart,
-            TweenInfo.new(Distance/Speed, Enum.EasingStyle.Linear),
-            {CFrame = Pos}
-        ):Play()
-        _G.Clip = true
-        wait(Distance/Speed)
-        _G.Clip = false
+    local Distance = (Pos.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
+
+    if game.Players.LocalPlayer.Character.Humanoid.Sit then
+        game.Players.LocalPlayer.Character.Humanoid.Sit = false
     end
 
-    function topos(Pos)
-        Distance = (Pos.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
-        if game.Players.LocalPlayer.Character.Humanoid.Sit == true then game.Players.LocalPlayer.Character.Humanoid.Sit = false end
-        pcall(function() tween = game:GetService("TweenService"):Create(game.Players.LocalPlayer.Character.HumanoidRootPart,TweenInfo.new(Distance/210, Enum.EasingStyle.Linear),{CFrame = Pos}) end)
-        tween:Play()
-        if Distance <= 250 then
-            tween:Cancel()
-            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = Pos
-        end
-        if _G.StopTween == true then
-            tween:Cancel()
-            _G.Clip = false
-        end
+    if _G.StopTween then
+        return
     end
+
+    local humanoidRootPart = game.Players.LocalPlayer.Character.HumanoidRootPart
+    local initialCFrame = humanoidRootPart.CFrame
+
+    pcall(function()
+        local tweenInfo = TweenInfo.new(Distance / 210, Enum.EasingStyle.Linear)
+        local tween = game:GetService("TweenService"):Create(humanoidRootPart, tweenInfo, { CFrame = Pos })
+
+        tween:Play()
+
+        local startTime = tick()
+        local duration = tweenInfo.Time
+        repeat
+            wait()
+            local elapsedTime = tick() - startTime
+            local alpha = math.min(1, elapsedTime / duration)
+            humanoidRootPart.CFrame = initialCFrame:Lerp(Pos, alpha)
+        until elapsedTime >= duration or _G.StopTween
+
+        if not _G.StopTween then
+            humanoidRootPart.CFrame = Pos
+        end
+    end)
+end
+    
+    function TP(Pos)
+    local Distance = (Pos.Position - game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
+    local Speed = (Distance < 250) and 600 or 200
+
+    local humanoidRootPart = game:GetService("Players").LocalPlayer.Character.HumanoidRootPart
+    local tweenInfo = TweenInfo.new(Distance / Speed, Enum.EasingStyle.Linear)
+    local tween = game:GetService("TweenService"):Create(humanoidRootPart, tweenInfo, { CFrame = Pos })
+
+    _G.Clip = true
+    tween:Play()
+
+    local success, err = pcall(function()
+        tween:Wait()
+    end)
+
+    if success then
+        wait(Distance / Speed)
+    else
+        warn("Tween cancelled:", err)
+    end
+
+    _G.Clip = false
+end
+
+    function topos(Pos)
+    local Distance = (Pos.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
+
+    if game.Players.LocalPlayer.Character.Humanoid.Sit then
+        game.Players.LocalPlayer.Character.Humanoid.Sit = false
+    end
+
+    if _G.StopTween then
+        return
+    end
+
+    local tweenInfo = TweenInfo.new(Distance / 210, Enum.EasingStyle.Linear)
+    local humanoidRootPart = game.Players.LocalPlayer.Character.HumanoidRootPart
+
+    local isTweening = true
+
+    local tween = game:GetService("TweenService"):Create(humanoidRootPart, tweenInfo, { CFrame = Pos })
+    tween:Play()
+
+    spawn(function()
+        wait(Distance / 210)
+        isTweening = false
+    end)
+
+    wait()
+
+    if isTweening then
+        tween:Cancel()
+        _G.Clip = false
+    end
+end
     
 --Tween Boats 
 function TPB(CFgo)
-	local tween_s = game:service"TweenService"
-	local info = TweenInfo.new((game:GetService("Workspace").Boats.PirateBrigade.VehicleSeat.CFrame.Position - CFgo.Position).Magnitude/250, Enum.EasingStyle.Linear)
-	tween = tween_s:Create(game:GetService("Workspace").Boats.PirateBrigade.VehicleSeat, info, {CFrame = CFgo})
-	tween:Play()
+    local tween_s = game:GetService("TweenService")
+    local info = TweenInfo.new((game:GetService("Workspace").Boats.PirateBrigade.VehicleSeat.CFrame.Position - CFgo.Position).Magnitude / 250, Enum.EasingStyle.Linear)
 
-	local tweenfunc = {}
+    local tween = tween_s:Create(game:GetService("Workspace").Boats.PirateBrigade.VehicleSeat, info, { CFrame = CFgo })
 
-	function tweenfunc:Stop()
-		tween:Cancel()
-	end
+    local tweenfunc = {}
 
-	return tweenfunc
+    function tweenfunc:Play()
+        if game.Players.LocalPlayer.Character:WaitForChild("Humanoid").Health <= 0 or not game:GetService("Players").LocalPlayer.Character:WaitForChild("Humanoid") then
+            return
+        end
+
+        tween:Play()
+    end
+
+    function tweenfunc:Stop()
+        tween:Cancel()
+    end
+
+    return tweenfunc
 end
 
 function TPP(CFgo)
-	if game.Players.LocalPlayer.Character:WaitForChild("Humanoid").Health <= 0 or not game:GetService("Players").LocalPlayer.Character:WaitForChild("Humanoid") then tween:Cancel() repeat wait() until game:GetService("Players").LocalPlayer.Character:WaitForChild("Humanoid") and game:GetService("Players").LocalPlayer.Character:WaitForChild("Humanoid").Health > 0 wait(7) return end
-	local tween_s = game:service"TweenService"
-	local info = TweenInfo.new((game:GetService("Players")["LocalPlayer"].Character.HumanoidRootPart.Position - CFgo.Position).Magnitude/325, Enum.EasingStyle.Linear)
-	tween = tween_s:Create(game.Players.LocalPlayer.Character["HumanoidRootPart"], info, {CFrame = CFgo})
-	tween:Play()
+    local humanoidRootPart = game.Players.LocalPlayer.Character:WaitForChild("HumanoidRootPart")
+    local tween_s = game:GetService("TweenService")
+    local info = TweenInfo.new((humanoidRootPart.Position - CFgo.Position).Magnitude / 325, Enum.EasingStyle.Linear)
 
-	local tweenfunc = {}
+    local tween = tween_s:Create(humanoidRootPart, info, { CFrame = CFgo })
 
-	function tweenfunc:Stop()
-		tween:Cancel()
-	end
+    local tweenfunc = {}
 
-	return tweenfunc
+    function tweenfunc:Play()
+        if game.Players.LocalPlayer.Character:WaitForChild("Humanoid").Health <= 0 or not game:GetService("Players").LocalPlayer.Character:WaitForChild("Humanoid") then
+            return
+        end
+
+        tween:Play()
+    end
+
+    function tweenfunc:Stop()
+        tween:Cancel()
+    end
+
+    return tweenfunc
 end
 
-getgenv().ToTargets = function(p)
+getgenv().ToTargets = function(targetPosition)
     task.spawn(function()
         pcall(function()
-            if game:GetService("Players").LocalPlayer:DistanceFromCharacter(p.Position) <= 250 then 
-                game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = p
-            elseif not game.Players.LocalPlayer.Character:FindFirstChild("Root")then 
-                local K = Instance.new("Part",game.Players.LocalPlayer.Character)
-                K.Size = Vector3.new(1,0.5,1)
-                K.Name = "Root"
-                K.Anchored = true
-                K.Transparency = 1
-                K.CanCollide = false
-                K.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame * CFrame.new(0,20,0)
+            local localPlayer = game:GetService("Players").LocalPlayer
+            local character = localPlayer.Character
+
+            if localPlayer:DistanceFromCharacter(targetPosition) <= 250 then 
+                character.HumanoidRootPart.CFrame = targetPosition
+            elseif not character:FindFirstChild("Root") and character:FindFirstChild("HumanoidRootPart") then 
+                local rootPart = Instance.new("Part", character)
+                rootPart.Size = Vector3.new(1, 0.5, 1)
+                rootPart.Name = "Root"
+                rootPart.Anchored = true
+                rootPart.Transparency = 1
+                rootPart.CanCollide = false
+                rootPart.CFrame = character.HumanoidRootPart.CFrame * CFrame.new(0, 20, 0)
             end
-            local U = (game.Players.LocalPlayer.Character.HumanoidRootPart.Position-p.Position).Magnitude
-            local z = game:service("TweenService")
-            local B = TweenInfo.new((p.Position-game.Players.LocalPlayer.Character.Root.Position).Magnitude/300,Enum.EasingStyle.Linear)
-            local S,g = pcall(function()
-            local q = z:Create(game.Players.LocalPlayer.Character.Root,B,{CFrame = p})
-            q:Play()
-        end)
-        if not S then 
-            return g
-        end
-        game.Players.LocalPlayer.Character.Root.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
-            if S and game.Players.LocalPlayer.Character:FindFirstChild("Root") then 
+
+            local distance = localPlayer:DistanceFromCharacter(targetPosition)
+            local tweenService = game:GetService("TweenService")
+            local tweenInfo = TweenInfo.new(distance / 300, Enum.EasingStyle.Linear)
+
+            pcall(function()
+                local tween = tweenService:Create(character.Root, tweenInfo, { CFrame = targetPosition })
+                tween:Play()
+                tween:Wait()
+                character.Root.CFrame = character.HumanoidRootPart.CFrame
+            end)
+
+            if character:FindFirstChild("Root") then 
                 pcall(function()
-                    if (game.Players.LocalPlayer.Character.HumanoidRootPart.Position-p.Position).Magnitude >= 20 then 
+                    if distance >= 20 then 
                         spawn(function()
                             pcall(function()
-                                if (game.Players.LocalPlayer.Character.Root.Position-game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude > 150 then 
-                                    game.Players.LocalPlayer.Character.Root.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
+                                if (character.Root.Position - character.HumanoidRootPart.Position).Magnitude > 150 then 
+                                    character.Root.CFrame = character.HumanoidRootPart.CFrame
                                 else 
-                                    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame=game.Players.LocalPlayer.Character.Root.CFrame
+                                    character.HumanoidRootPart.CFrame = character.Root.CFrame
                                 end
                             end)
                         end)
-                    elseif (game.Players.LocalPlayer.Character.HumanoidRootPart.Position-p.Position).Magnitude >= 10 and(game.Players.LocalPlayer.Character.HumanoidRootPart.Position-p.Position).Magnitude < 20 then 
-                        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = p
-                    elseif (game.Players.LocalPlayer.Character.HumanoidRootPart.Position-p.Position).Magnitude < 10 then 
-                        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = p
+                    elseif distance >= 10 and distance < 20 then 
+                        character.HumanoidRootPart.CFrame = targetPosition
+                    elseif distance < 10 then 
+                        character.HumanoidRootPart.CFrame = targetPosition
                     end
                 end)
             end
-	    end)
+        end)
     end)
-    end
+end
     
 Type = 1
 spawn(function()
@@ -3200,7 +3278,37 @@ end)
 local Library = Update:Window("    KZ HUB","",Enum.KeyCode.RightControl)
 Setting = Library:Tab("Setting")
 
-local Time = Setting:Label("Executor Time");spawn(function() getgenv().Time = true;while true do wait(.1) UpdateTime() end end);function UpdateTime() local date = os.date("*t");local hour = (date.hour) % 24;local ampm = hour < 12 and "AM" or "PM";local timezone = string.format("%02i:%02i:%02i %s", ((hour -1) % 12) + 1, date.min, date.sec, ampm);local datetime = string.format("%02d/%02d/%04d", date.day, date.month, date.year);local LocalizationService = game:GetService("LocalizationService");local Players = game:GetService("Players");local player = Players.LocalPlayer;local name = player.Name;local result, code = pcall(function()   return LocalizationService:GetCountryRegionForPlayerAsync(player)  end);Time:Set(" : " .. timezone);Time:Set("Executor Time: " .. datetime .. " [ " .. code .. " ]");spawn(function() if getgenv().Time then pcall(function()  while wait() do  Time()  end end) end end) end
+local Setting = Setting or {}; -- Make sure Setting table is initialized
+
+-- Your existing code...
+
+local Time = Setting:Label("Executor Time")
+local dateTimeLabel = Setting:Label("DateTime")
+spawn(function()
+    getgenv().Time = true
+    while true do
+        wait(.1)
+        UpdateTime()
+    end
+end)
+
+function UpdateTime()
+    local date = os.date("*t")
+    local hour = (date.hour) % 24
+    local ampm = hour < 12 and "AM" or "PM"
+    local timezone = string.format("%02i:%02i:%02i %s", ((hour -1) % 12) + 1, date.min, date.sec, ampm)
+    local datetime = string.format("%02d/%02d/%04d", date.day, date.month, date.year)
+    local LocalizationService = game:GetService("LocalizationService")
+    local Players = game:GetService("Players")
+    local player = Players.LocalPlayer
+    local name = player.Name
+    local result, code = pcall(function()
+        return LocalizationService:GetCountryRegionForPlayerAsync(player)
+    end)
+
+    Time:Set(" : " .. timezone)
+    dateTimeLabel:Set("Executor Time: " .. datetime .. " [ " .. code .. " ]")
+end
 
 Setting:Label("Script PC/Mobile")
 Setting:Label("Wellcone To Script KZ HUB")
