@@ -8938,7 +8938,6 @@ spawn(function()
                 local boatAbsent = not game:GetService("Workspace").Boats:FindFirstChild("PirateBrigade")
 
                 if enemiesAbsent and boatAbsent then
-                    game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("requestEntrance", Vector3.new(-5079.44677734375, 313.7293395996094, -3151.065185546875))
                     buyBoatIfNotExists()
                 elseif game:GetService("Workspace").Boats:FindFirstChild("PirateBrigade") then
                     local vehicleSeatCFrame = game:GetService("Workspace").Boats.PirateBrigade.VehicleSeat.CFrame * CFrame.new(0, 1, 0)
