@@ -2979,46 +2979,18 @@ end
     
 --Tween Boats 
 function TPB(CFgo)
-    local vehicleSeat = game:GetService("Workspace").Boats.PirateBrigade.VehicleSeat
-    local humanoid = game.Players.LocalPlayer.Character:WaitForChild("Humanoid")
-    local tween_s = game:GetService("TweenService")
+	local tween_s = game:service"TweenService"
+	local info = TweenInfo.new((game:GetService("Workspace").Boats.PirateBrigade.VehicleSeat.CFrame.Position - CFgo.Position).Magnitude/300, Enum.EasingStyle.Linear)
+	tween = tween_s:Create(game:GetService("Workspace").Boats.PirateBrigade.VehicleSeat, info, {CFrame = CFgo})
+	tween:Play()
 
-    local tweenSpeedChanged = false  -- เพื่อตรวจสอบว่ามีการเปลี่ยนแปลงค่า Tween Speed หรือไม่
+	local tweenfunc = {}
 
-    local function createTweenInfo()
-        return TweenInfo.new((vehicleSeat.CFrame.Position - CFgo.Position).Magnitude / TweeSpeedBoat, Enum.EasingStyle.Linear)
-    end
+	function tweenfunc:Stop()
+		tween:Cancel()
+	end
 
-    local isTweening = false
-    local tween
-
-    local tweenfunc = {}
-
-    function tweenfunc:Play()
-        if humanoid.Health <= 0 or not humanoid then
-            return
-        end
-
-        local newTweenInfo = createTweenInfo()
-        tween = tween_s:Create(vehicleSeat, newTweenInfo, { CFrame = CFgo })
-
-        isTweening = true
-
-        tween.Completed:Connect(function()
-            isTweening = false
-        end)
-
-        tween:Play()
-    end
-
-    function tweenfunc:Stop()
-        if isTweening then
-            tween:Cancel()
-            isTweening = false
-        end
-    end
-
-    return tweenfunc
+	return tweenfunc
 end
 
 
