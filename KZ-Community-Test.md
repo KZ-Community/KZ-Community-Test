@@ -2993,38 +2993,20 @@ function TPB(CFgo)
 	return tweenfunc
 end
 
-
 function TPP(CFgo)
-    local humanoidRootPart = game.Players.LocalPlayer.Character:WaitForChild("HumanoidRootPart")
-    local tween_s = game:GetService("TweenService")
-    local tweenInfo = TweenInfo.new((humanoidRootPart.Position - CFgo.Position).Magnitude / 325, Enum.EasingStyle.Linear)
+	if game.Players.LocalPlayer.Character:WaitForChild("Humanoid").Health <= 0 or not game:GetService("Players").LocalPlayer.Character:WaitForChild("Humanoid") then tween:Cancel() repeat wait() until game:GetService("Players").LocalPlayer.Character:WaitForChild("Humanoid") and game:GetService("Players").LocalPlayer.Character:WaitForChild("Humanoid").Health > 0 wait(7) return end
+	local tween_s = game:service"TweenService"
+	local info = TweenInfo.new((game:GetService("Players")["LocalPlayer"].Character.HumanoidRootPart.Position - CFgo.Position).Magnitude/325, Enum.EasingStyle.Linear)
+	tween = tween_s:Create(game.Players.LocalPlayer.Character["HumanoidRootPart"], info, {CFrame = CFgo})
+	tween:Play()
 
-    local tween = tween_s:Create(humanoidRootPart, tweenInfo, { CFrame = CFgo })
+	local tweenfunc = {}
 
-    local isTweening = false
+	function tweenfunc:Stop()
+		tween:Cancel()
+	end
 
-    local tweenfunc = {}
-
-    function tweenfunc:Play()
-        if game.Players.LocalPlayer.Character:FindFirstChild("Humanoid") and game.Players.LocalPlayer.Character.Humanoid.Health > 0 then
-            tween:Play()
-
-            isTweening = true
-
-            local connection
-            connection = tween.Completed:Connect(function()
-                isTweening = false
-                connection:Disconnect()  -- ลบการเชื่อมต่อหลังจากการทำงานเสร็จสิ้น
-            end)
-        end
-    end
-
-    function tweenfunc:Stop()
-        tween:Cancel()
-        isTweening = false
-    end
-
-    return tweenfunc
+	return tweenfunc
 end
 
 getgenv().ToTargets = function(targetPosition)
@@ -9075,12 +9057,6 @@ spawn(function()
             end
         end
     end)
-end)
-
-local TweeSpeedBoat = 250  -- ค่าเริ่มต้น
-
-Setting:Slider("Tween Speed Boat", 1, 300, TweeSpeedBoat, function(value)
-    TweeSpeedBoat = value
 end)
 
 ---spawn(function()
