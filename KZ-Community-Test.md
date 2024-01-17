@@ -14647,23 +14647,27 @@ spawn(function()
         end
     end)
     
-    E:Toggle("Fruit Notification",_G.Grabfruit,function(value)
+    E:Toggle("Fruit Notification", _G.Grabfruit, function(value)
     _G.FruitCheck = value
-    end)
-    
-    spawn(function()
-			while wait(.1) do
-				if _G.FruitCheck then
-					for i,v in pairs(game.Workspace:GetChildren()) do
-						if string.find(v.Name, "Fruit") then
-							require(game:GetService("ReplicatedStorage").Notification).new("Fruit Spawn"):Display();
-                            wait()
-                            setthreadcontext(5)
-						end
-					end
-				end
+end)
+
+local NotificationModule = require(game:GetService("ReplicatedStorage").Notification)
+
+spawn(function()
+    while wait(.1) do
+        if _G.FruitCheck then
+            for _, fruit in pairs(game.Workspace:GetChildren()) do
+                if string.find(fruit.Name, "Fruit") then
+                    local notification = NotificationModule.new("Fruit Spawn")
+                    notification:SetBackgroundColor(Color3.fromRGB(0, 255, 0))  -- ปรับสีตามที่ต้องการ
+                    notification:Display()
+                    wait()
+                    setthreadcontext(5)
+                end
+            end
+        end
     end
-    end)
+end)
     
     E:Toggle("ESP Real Fruit",RealFruitESP,function(a)
         RealFruitESP = a
@@ -16021,13 +16025,15 @@ for _, effectName in ipairs(effectsToDestroy) do
     end
 end
 
-local SuperFastMode = true -- Change to true if you want Super Super Super Fast attack (Like instant kill) but it will make the game kick you more than normal mode
+local SuperFastMode = true
+local KickProtectionEnabled = true
+local KickProtectionCooldown = 5  -- ระยะเวลาที่ต้องรอหลังจากโดนเตะออก
 
 local plr = game.Players.LocalPlayer
 local CbFw = debug.getupvalues(require(plr.PlayerScripts.CombatFramework))
 local CbFw2 = CbFw[2]
+local LastKickTime = 0
 
--- Function to get the current blade
 function GetCurrentBlade()
     local p13 = CbFw2.activeController
     local ret = p13.blades[1]
@@ -16038,7 +16044,6 @@ function GetCurrentBlade()
     return ret
 end
 
--- Function to perform fast attacks without cooldown
 function AttackNoCD()
     local AC = CbFw2.activeController
     for i = 1, 1 do
@@ -16058,17 +16063,17 @@ function AttackNoCD()
         bladeHit = uniqueHits
 
         if #bladeHit > 0 then
-            local u8 = debug.getupvalue(AC.attack, 5)
-            local u9 = debug.getupvalue(AC.attack, 6)
-            local u7 = debug.getupvalue(AC.attack, 4)
-            local u10 = debug.getupvalue(AC.attack, 7)
-            local u12 = (u8 * 798405 + u7 * 727595) % u9
+            local currentTime = tick()
+            if KickProtectionEnabled and currentTime - LastKickTime < KickProtectionCooldown then
+                return  -- ถ้าในระยะเวลา KickProtectionCooldown ยังไม่สามารถโจมตีได้
+            end
+
+            local u8, u9, u7, u10, u12 = debug.getupvalue(AC.attack, 5), debug.getupvalue(AC.attack, 6), debug.getupvalue(AC.attack, 4), debug.getupvalue(AC.attack, 7)
+            u12 = (u8 * 798405 + u7 * 727595) % u9
             local u13 = u7 * 798405
-            (function()
-                u12 = (u12 * u9 + u13) % 1099511627776
-                u8 = math.floor(u12 / u9)
-                u7 = u12 - u8 * u9
-            end)()
+            u12 = (u12 * u9 + u13) % 1099511627776
+            u8 = math.floor(u12 / u9)
+            u7 = u12 - u8 * u9
             u10 = u10 + 1
             debug.setupvalue(AC.attack, 5, u8)
             debug.setupvalue(AC.attack, 6, u9)
@@ -16084,13 +16089,13 @@ function AttackNoCD()
                 game.ReplicatedStorage.Remotes.Validator:FireServer(math.floor(u12 / 1099511627776 * 16777215), u10)
                 game:GetService("ReplicatedStorage").RigControllerEvent:FireServer("hit", bladeHit, i, "")
             end
+
+            LastKickTime = currentTime
         end
     end
 end
 
-local waitFunction = SuperFastMode and task.wait or wait
-
-while waitFunction() do
+while wait(SuperFastMode and 0.001 or 0.1) do
     local success, error = pcall(AttackNoCD)
     if not success then
         warn("Error in AttackNoCD:", error)
