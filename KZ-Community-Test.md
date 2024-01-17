@@ -8911,7 +8911,7 @@ end)
     StopTween(_G.DomadicAutoDriveBoat)
     end)
 
-local function buyBoatIfNotExists()
+function buyBoatIfNotExists()
     if not game:GetService("Workspace").Boats:FindFirstChild("PirateBrigade") then
         local buyb = TPP(CFrame.new(-6123.90088, 16.4465275, -2249.2832, -0.54705143, 1.08052314e-08, 0.837098956, 2.53016292e-08, 1, 3.62688457e-09, -0.837098956, 2.31640609e-08, -0.54705143))
         if (buyb and (buyb.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).magnitude <= 10) then
@@ -8922,6 +8922,7 @@ local function buyBoatIfNotExists()
             }
             game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(unpack(args))
         end
+        buyb:Stop()  -- เพิ่มบรรทัดนี้เพื่อให้แน่ใจว่า buyb:Stop() จะถูกเรียกทุกรอบ
     end
 end
 
