@@ -16026,13 +16026,10 @@ for _, effectName in ipairs(effectsToDestroy) do
 end
 
 local SuperFastMode = true
-local KickProtectionEnabled = true
-local KickProtectionCooldown = 5  -- ระยะเวลาที่ต้องรอหลังจากโดนเตะออก
 
 local plr = game.Players.LocalPlayer
 local CbFw = debug.getupvalues(require(plr.PlayerScripts.CombatFramework))
 local CbFw2 = CbFw[2]
-local LastKickTime = 0
 
 function GetCurrentBlade()
     local p13 = CbFw2.activeController
@@ -16063,11 +16060,6 @@ function AttackNoCD()
         bladeHit = uniqueHits
 
         if #bladeHit > 0 then
-            local currentTime = tick()
-            if KickProtectionEnabled and currentTime - LastKickTime < KickProtectionCooldown then
-                return  -- ถ้าในระยะเวลา KickProtectionCooldown ยังไม่สามารถโจมตีได้
-            end
-
             local u8, u9, u7, u10, u12 = debug.getupvalue(AC.attack, 5), debug.getupvalue(AC.attack, 6), debug.getupvalue(AC.attack, 4), debug.getupvalue(AC.attack, 7)
             u12 = (u8 * 798405 + u7 * 727595) % u9
             local u13 = u7 * 798405
@@ -16089,8 +16081,6 @@ function AttackNoCD()
                 game.ReplicatedStorage.Remotes.Validator:FireServer(math.floor(u12 / 1099511627776 * 16777215), u10)
                 game:GetService("ReplicatedStorage").RigControllerEvent:FireServer("hit", bladeHit, i, "")
             end
-
-            LastKickTime = currentTime
         end
     end
 end
