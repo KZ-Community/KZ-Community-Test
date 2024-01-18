@@ -139,17 +139,30 @@ function Update:Window(text,logo,keybind)
 	Hub.TextSize = 17.000
 	Hub.TextXAlignment = Enum.TextXAlignment.Left
 
-	local BindButton = Instance.new("TextButton")
-	BindButton.Name = "BindButton"
-	BindButton.Parent = Top
-	BindButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-	BindButton.BackgroundTransparency = 1.000
-	BindButton.Position = UDim2.new(0.847561002, 0, 0, 0)
-	BindButton.Size = UDim2.new(0, 100, 0, 27)
-	BindButton.Font = Enum.Font.GothamSemibold
-	BindButton.Text = "Version | Free"
-	BindButton.TextColor3 = Color3.fromRGB(153, 51, 255)
-	BindButton.TextSize = 13.000
+	    -- สร้างนาฬิกา
+    local Clock = Instance.new("TextLabel")
+    Clock.Name = "Clock"
+    Clock.Parent = Top
+    Clock.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    Clock.BackgroundTransparency = 1.000
+    Clock.Position = UDim2.new(0.847561002, 0, 0, 0) -- ตำแหน่งที่จะวางนาฬิกา
+    Clock.Size = UDim2.new(0, 100, 0, 27)
+    Clock.Font = Enum.Font.GothamSemibold
+    Clock.Text = ""
+    Clock.TextColor3 = Color3.fromRGB(153, 51, 255)
+    Clock.TextSize = 13.000
+
+-- ฟังก์ชันสำหรับอัปเดตนาฬิกา
+local function updateClock()
+    local currentTime = os.date("%H:%M:%S") -- รูปแบบเวลา: ชั่วโมง:นาที:วินาที
+        Clock.Text = currentTime
+end
+
+-- อัปเดตนาฬิกาทุกวินาที
+while true do
+    wait(1) -- รอ 1 วินาที
+    updateClock()
+end
 
 	local Tab = Instance.new("Frame")---เเถบช้าย
 	Tab.Name = "Tab"
