@@ -5148,6 +5148,13 @@ Main:Toggle("Auto Farm Chest Hop",_G.AutoFarmChest_Hop,function(value)
 if World3 then
     Main:Seperator("Dought Boss")
     
+    Main:Button("Bypass TP",function()
+    wait(.1)
+    game.Players.localPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-2091.911865234375, 70.00884246826172, -12142.8359375)
+    game.Players.LocalPlayer.Character.Humanoid:ChangeState(15)
+    game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("SetSpawnPoint")
+    end)
+    
 local ListC = {"NoQuest", "AcceptQuest", "MasteryFruit"}
 CakeFMode = "Accept Quest"
 Main:Dropdown("Select Cake Farm Mode", ListC,function(value)
@@ -5697,6 +5704,13 @@ end)
                 BoneCheck:Set("Total Bone : "..(game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("Bones","Check")))
             end)
         end
+    end)
+    
+    Main:Button("Bypass TP",function()
+    wait(.1)
+    game.Players.localPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-9515.3720703125, 164.00624084473, 5786.0610351562)
+    game.Players.LocalPlayer.Character.Humanoid:ChangeState(15)
+    game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("SetSpawnPoint")
     end)
     
 local ListB = {"NoQuest", "AcceptQuest", "MasteryFruit"}
