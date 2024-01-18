@@ -11381,12 +11381,7 @@ task.spawn(function()
     end)
 	
 	Sea = Library:Tab("Sea Event")
-	
-	    if World1 or World2 then
-RaceV4:Label("Ummm 🧐 Go to Third Sea")
-end
 
-if World3 then
     Sea:Seperator("Chack Full Moon !")
 
     local FM = Sea:Label('Third World')
@@ -12044,7 +12039,7 @@ spawn(function()
         end
     end
 end)
-end
+
 	RaceV4 = Library:Tab("Race")
 	
 	    if World1 or World2 then
