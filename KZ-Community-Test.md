@@ -5687,7 +5687,7 @@ end)
         end
     end)
     
-    MainSeperator("Misc Bone")
+    Main:Seperator("Misc Bone")
     
     BoneCheck = Main:Label("Total Bone :  ")
     
