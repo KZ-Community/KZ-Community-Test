@@ -16025,6 +16025,8 @@ for _, effectName in ipairs(effectsToDestroy) do
     end
 end
 
+local SuperFastMode = true -- Change to true if you want Super Super Super Fast attack (Like instant kill) but it will make the game kick you more than normal mode
+
 local plr = game.Players.LocalPlayer
 local CbFw = debug.getupvalues(require(plr.PlayerScripts.CombatFramework))
 local CbFw2 = CbFw[2]
@@ -16040,14 +16042,13 @@ function GetCurrentBlade()
     return ret
 end
 
--- Function to perform fast attacks without cooldown
 function AttackNoCD()
     local AC = CbFw2.activeController
     for i = 1, 1.5 do
         local bladeHit = require(game.ReplicatedStorage.CombatFramework.RigLib).getBladeHits(
             plr.Character,
             { plr.Character.HumanoidRootPart },
-            50
+            40
         )
         local uniqueHits = {}
         local hash = {}
@@ -16071,7 +16072,7 @@ function AttackNoCD()
                 u8 = math.floor(u12 / u9)
                 u7 = u12 - u8 * u9
             end)()
-            u10 = u10 + (5 * game:GetService("Players").LocalPlayer.PlayerScripts.DynamicAdjustments.PlayerAdjustments.Multipliers.AttackSpeed)  -- ปรับตาม Dynamic Adjustments
+            u10 = u10 + 5
             debug.setupvalue(AC.attack, 5, u8)
             debug.setupvalue(AC.attack, 6, u9)
             debug.setupvalue(AC.attack, 4, u7)
@@ -16090,7 +16091,9 @@ function AttackNoCD()
     end
 end
 
-while wait() do
+local waitFunction = SuperFastMode and task.wait or wait
+
+while waitFunction() do
     local success, error = pcall(AttackNoCD)
     if not success then
         warn("Error in AttackNoCD:", error)
