@@ -3557,7 +3557,7 @@ end)
 
 
 
-Setting:Toggle("Remove Hit Sound And Level Up",true,function(Remo)
+Setting:Toggle("Remove Hit Sound And Level Up",false,function(Remo)
 _G.RemoveHit = Remo
 end)
 
